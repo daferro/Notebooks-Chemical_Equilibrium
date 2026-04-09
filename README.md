@@ -8,11 +8,11 @@ These materials accompany a manuscript submitted to the *Journal of Chemical Edu
 
 You may either download the notebooks for local use or open them directly online using the links below:
 
-## _Notebook 1: the N2O4 <--> 2NO2 reaction_
+## _Notebook 1: the N<sub>2</sub>O<sub>4</sub> (g) ⇌ 2 NO<sub>2</sub> (g) reaction_
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook_1-N2O4_2NO2.ipynb)
 
-## _Notebook 2: select your own reaction_
+## _Notebook 2: study your own reaction_
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks_Chemical_Equilibrium/blob/main/Notebook_2-selected_reaction.ipynb)
 
