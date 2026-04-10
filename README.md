@@ -12,7 +12,7 @@ This repository contains Jupyter/Python notebooks developed to support the teach
 
 These materials accompany a manuscript submitted to the *Journal of Chemical Education* and are suitable for classroom demonstrations, guided-inquiry activities, or independent student study.
 
-You may either download the notebooks for local use or open them directly online using the links below:
+You may either download the notebooks for local use or **open them directly online using the links below**:
 
 ## _Notebook 1: the N<sub>2</sub>O<sub>4</sub> (g) ⇌ 2 NO<sub>2</sub> (g) reaction_
 
