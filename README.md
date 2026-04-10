@@ -20,7 +20,7 @@ You may either download the notebooks for local use or open them directly online
 
 ## _Notebook 2: study your own reaction_
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks_Chemical_Equilibrium/blob/main/Notebook_2-selected_reaction.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook_2-selected_reaction.ipynb)
 
 # License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
