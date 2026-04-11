@@ -8,7 +8,7 @@ This repository contains Jupyter/Python notebooks developed to support the teach
   A guided, classroom-tested notebook built around the thermal dissociation of dinitrogen tetroxide. The repository also includes a **student handout (PDF)** with guided activities and exercises for this case study. The handout will be updated over time as the materials are refined.
 
 - **Notebook 2 — General framework for elementary gas-phase reactions**  
-  A more general notebook that can be applied to **other elementary gas-phase reactions**, focusing on the equilibrium description from **classical thermodynamics** and **statistical mechanics**.
+  A more general notebook that can be applied to **other elementary gas-phase reactions**, focusing on the equilibrium description from **classical thermodynamics** and **statistical mechanics**. A *PDF* is also included, describing the setup and summarizing results for two reactions beyond the case study.
 
 These materials accompany a manuscript submitted to the *Journal of Chemical Education* and are suitable for classroom demonstrations, guided-inquiry activities, or independent student study.
 
