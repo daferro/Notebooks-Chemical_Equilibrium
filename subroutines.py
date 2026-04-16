@@ -216,7 +216,7 @@ def download_file(fname):
     btn.on_click(lambda _: files.download(fname))
     return btn
 # --------------------------------------------- #
-def _on_download_clicked(_,_case_):
+def on_download_clicked(_,_case_):
     if _case_.startswith("kin"): init_conditions = f"{T_slider.value:.0f}K_{P_slider.value:.2f}bar_{V_slider.value:.2f}L_{yA_slider.value:.2f}"
 
     # --- get figure from global variable ---
