@@ -64,6 +64,7 @@ last_fig  = None
 # ------------------------------------------------
 FONTSIZE  = [11,12,14,15,16,20]
 # ------------------------------------------------
+NPOINTST  = 51    # number of T  points
 NPOINTSXI = 251   # number of xi points (thermo & kinetics)
 REL_XI_EQ = 0.999 # plot until REL_XI_EQ * xieq
 # ============================================== #
@@ -200,6 +201,7 @@ def prepare_variables(T, P, nus, n_0, xi):
     return T, P, nus_e, n_0_e, xi, dnu, ntot_0
 # ============================================= #
 
+
 # ============================================= #
 #        Functions for downloading FILES        #
 # ============================================= #
@@ -229,6 +231,7 @@ def pyscf_download(molecule,functional,basis,DFTGRID,which_ones=[]):
          print(rf"       {output_frq:s}")
          btn3 = download_file(output_frq); display(btn3)
 # ============================================= #
+
 
 # ============================================= #
 # Functions for part 1: CHEMICAL THERMODYNAMICS #
@@ -358,8 +361,9 @@ def get_xieq_VT(V,T,n_0,nus,refdata):
     return xi_eq
 # ============================================= #
 
+
 # ============================================= #
-# Functions for part 1: STATIST.-THERMODYNAMICS #
+# Functions for part 2: STATIST.-THERMODYNAMICS #
 # ============================================= #
 def level_to_string(functional,basis):
     level      = rf"{functional.upper():s}_{basis.upper():s}"
@@ -368,7 +372,7 @@ def level_to_string(functional,basis):
     level      = level.replace("*","_ast_")
     return level
 # --------------------------------------------- #
-def files_of_interest(molecule,functional,basis,DFTGRID):
+def files_of_interest(molecule,functional="",basis="",DFTGRID=""):
 
     level      = level_to_string(functional,basis)
     # filenames
@@ -759,6 +763,7 @@ def vib_contri_avera(freq_cm,T1,T2):
     average  = average * theta/(T2-T1)
     return average
 # ============================================= #
+
 
 # ============================================= #
 #      FUNCTIONS FOR PRINTING INFORMATION       #
