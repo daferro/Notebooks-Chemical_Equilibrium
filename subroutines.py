@@ -65,7 +65,7 @@ last_info = None
 # ------------------------------------------------
 FONTSIZE  = [11,12,14,15,16,20]
 # ------------------------------------------------
-NPOINTSXI = 125   # number of xi points (kinetics)
+NPOINTSXI = 251   # number of xi points (thermo & kinetics)
 REL_XI_EQ = 0.999 # plot until REL_XI_EQ * xieq
 # ============================================== #
 TEXT1 = '''
@@ -275,15 +275,15 @@ def limits_xi(n_0,nus):
 # --------------------------------------------- #
 def get_DHo(T,refdata):
     '''Delta{H}^o as a function of T'''
-    DHo_ref,DSo_ref,DCPo_ref,T_ref = refdata
-    DHo_T = DHo_ref + DCPo_ref * T * (1 - T_ref/T)
+    DHo_ref,DSo_ref,DCPo_ref,TREF = refdata
+    DHo_T = DHo_ref + DCPo_ref * T * (1 - TREF/T)
     return DHo_T
 # --------------------------------------------- #
 def get_DGo(T,refdata):
     '''Delta{G}^o as a function of T'''
-    DHo_ref,DSo_ref,DCPo_ref,T_ref = refdata
+    DHo_ref,DSo_ref,DCPo_ref,TREF = refdata
     DGo_T  = DHo_ref - T * DSo_ref
-    DGo_T += DCPo_ref  * ( T - T_ref + T*np.log(T_ref / T))
+    DGo_T += DCPo_ref  * ( T - TREF + T*np.log(TREF / T))
     return DGo_T
 # --------------------------------------------- #
 def get_Gast(T,P,nus,refdata):
@@ -758,8 +758,8 @@ def compute_thermodynamics(T,molecule,key,dftdata):
     # return data in J and J/K
     return U, H, S, G, line
 # --------------------------------------------- #
-def sum_squared_errors(DCP,T,DGo_T,T_ref,DHo_ref,DSo_ref):
-    refdata   = (DHo_ref,DSo_ref,DCP*R,T_ref)
+def sum_squared_errors(DCP,T,DGo_T,TREF,DHo_ref,DSo_ref):
+    refdata   = (DHo_ref,DSo_ref,DCP*R,TREF)
     DGo_model = get_DGo(T,refdata)
     residuals = DGo_model - DGo_T
     return np.sum(residuals**2)
@@ -899,10 +899,10 @@ def pyscf_printdata(data):
 # ============================================= #
 # ----          PLOTTING FUNCTIONS         ---- #
 # ============================================= #
-def plot_DGo_T(T,T_ref,refdata):
+def plot_DGo_T(T,TREF,refdata):
     # Calculation of DG at Tref
-    DGo_ref = get_DGo(T_ref,refdata)
-    Keq_ref = np.exp(-DGo_ref/R/T_ref)
+    DGo_ref = get_DGo(TREF,refdata)
+    Keq_ref = np.exp(-DGo_ref/R/TREF)
 
     # Calculation of DG at other temperatures
     DGo_T = get_DGo(T,refdata)
@@ -916,8 +916,8 @@ def plot_DGo_T(T,T_ref,refdata):
 
     # LEFT PANEL #
     labeldot = r"$\Delta_{r}{G}^\circ(T_{\rm ref}) = %.2f \;\; \mathrm{kJ/mol}$"%(DGo_ref/1000)
-    ax[0].plot(T    ,DGo_T  /1000,'k-',zorder=1)
-    ax[0].plot(T_ref,DGo_ref/1000,'ro',zorder=3,label=labeldot)
+    ax[0].plot(T   ,DGo_T  /1000,'k-',zorder=1)
+    ax[0].plot(TREF,DGo_ref/1000,'ro',zorder=3,label=labeldot)
     ax[0].tick_params(axis='both', labelsize=FONTSIZE[4])
     ax[0].set_xlabel(r'$T \;\; (\mathrm{K})$'                        ,fontsize=FONTSIZE[5])
     ax[0].set_ylabel(r'$\Delta_{r} G^{\circ} \;\; (\mathrm{kJ/mol})$',fontsize=FONTSIZE[5])
@@ -927,8 +927,8 @@ def plot_DGo_T(T,T_ref,refdata):
     if 1E-2 < Keq_ref < 1000: sKeq_ref = "%.3f"%Keq_ref
     else                    : sKeq_ref = "%.3e"%Keq_ref
     labeldot = r"$K_{p}^\circ(T_{\rm ref}) = %s$"%sKeq_ref
-    ax[1].plot(T    ,Keq_T  ,'k-',zorder=1)
-    ax[1].plot(T_ref,Keq_ref,'ro',zorder=3,label=labeldot)
+    ax[1].plot(T   ,Keq_T  ,'k-',zorder=1)
+    ax[1].plot(TREF,Keq_ref,'ro',zorder=3,label=labeldot)
     ax[1].tick_params(axis='both', labelsize=FONTSIZE[4])
     ax[1].set_xlabel(r'$T \;\; (\mathrm{K})$'     ,fontsize=FONTSIZE[5])
     ax[1].set_ylabel(r'$K_{p}^\circ(T_{\rm ref})$',fontsize=FONTSIZE[5])
@@ -947,7 +947,7 @@ def plot_DGo_T(T,T_ref,refdata):
 
     return DGo_T
 # --------------------------------------------- #
-def plot_DGo_T_statmech(T,DGo_T,DGo_model,DCP,T_ref,DGo_ref,key):
+def plot_DGo_T_statmech(T,DGo_T,DGo_model,DCP,TREF,DGo_ref,key):
 
     plt.rcParams['text.usetex'] = True
 
@@ -958,8 +958,8 @@ def plot_DGo_T_statmech(T,DGo_T,DGo_model,DCP,T_ref,DGo_ref,key):
     if DGo_model is not None:
        plt.plot(T,[ii/1000 for ii in DGo_model],'r--',zorder=1,label=r"Eq. (1) with $\Delta_{r}C_{p}^\circ= %.2f\cdot R$"%DCP)
 
-    if T_ref is not None:
-       plt.plot(T_ref,DGo_ref/1000,'ro')
+    if TREF is not None:
+       plt.plot(TREF,DGo_ref/1000,'ro')
 
     # Format plot
     plt.xticks(fontsize=14)
