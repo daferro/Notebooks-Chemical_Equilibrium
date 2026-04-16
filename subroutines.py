@@ -61,7 +61,6 @@ ZERO3  = 1E-010  # comparison of rotational constants (if equal --> linear)
 ZERO4  = 1E-007  # for intercept method; if y=0 --> y=ZERO4 (so we can obtain the derivative)
 # ------------------------------------------------
 last_fig  = None
-last_info = None
 # ------------------------------------------------
 FONTSIZE  = [11,12,14,15,16,20]
 # ------------------------------------------------
@@ -216,33 +215,9 @@ def download_file(fname):
     btn.on_click(lambda _: files.download(fname))
     return btn
 # --------------------------------------------- #
-def on_download_clicked(_,_case_):
-    if _case_.startswith("kin"): init_conditions = f"{T_slider.value:.0f}K_{P_slider.value:.2f}bar_{V_slider.value:.2f}L_{yA_slider.value:.2f}"
+def pyscf_download(molecule,functional,basis,DFTGRID,which_ones=[]):
 
-    # --- get figure from global variable ---
-    fig = last_fig
-    if fig is None:
-        print("No figure yet; move a slider to generate the plot...")
-        return
-
-    # --- get file name ---
-    if   _case_ == "PT"       : fname = f"equilibrium_T{T_slider.value:.0f}K_p{P_slider.value:.2f}bar.svg"
-    elif _case_ == "VT"       : fname = f"equilibrium_T{T_slider.value:.0f}K_V{V_slider.value:.2f}L.svg"
-    elif _case_ == "intercept": fname = f"intercept_T{T_slider.value:.0f}K_p{P_slider.value:.2f}bar.svg"
-    elif _case_ == "dof"      : fname = "vib_dof.svg"
-    elif _case_ == "kinPT"    : fname = f"chemkinPT_{init_conditions:s}.svg"
-    elif _case_ == "kinVT"    : fname = f"chemkinVT_{init_conditions:s}.svg"
-    else                      : raise Exception
-
-    if _case_.startswith("kin"): original_size = fig.get_size_inches()
-    if _case_.startswith("kin"): fig.set_size_inches(10,8)
-    fig.savefig(fname, bbox_inches='tight',dpi=300)
-    if _case_.startswith("kin"): fig.set_size_inches(original_size)
-    files.download(fname)
-# --------------------------------------------- #
-def pyscf_download(molecule,functional,basis,which_ones=[]):
-
-    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis)
+    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis,DFTGRID)
     print(rf"     - file(s) to download:")
     if 1 in which_ones:
          print(rf"       {xyz_opt:s}")
@@ -393,7 +368,7 @@ def level_to_string(functional,basis):
     level      = level.replace("*","_ast_")
     return level
 # --------------------------------------------- #
-def files_of_interest(molecule,functional="",basis=""):
+def files_of_interest(molecule,functional,basis,DFTGRID):
 
     level      = level_to_string(functional,basis)
     # filenames
@@ -495,10 +470,10 @@ def create_visualization_xyz(xyz_file):
     view.zoom(2.5)
     return view
 # --------------------------------------------- #
-def pyscf_carryout_opt(molecule,unpaired,charge,functional,basis,bsym=False):
+def pyscf_carryout_opt(molecule,unpaired,charge,functional,basis,DFTGRID,bsym=False):
 
     # Files of interest
-    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis)
+    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis,DFTGRID)
 
     # Generate molecule from .xyz file
     with io.capture_output() as captured:
@@ -550,10 +525,10 @@ def pyscf_carryout_opt(molecule,unpaired,charge,functional,basis,bsym=False):
 
     pyscf.gto.tofile(opt_geom,xyz_opt)
 # --------------------------------------------- #
-def pyscf_carryout_frq(molecule,unpaired,charge,functional,basis,bsym=False):
+def pyscf_carryout_frq(molecule,unpaired,charge,functional,basis,DFTGRID,bsym=False):
 
     # Files of interest
-    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis)
+    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis,DFTGRID)
 
     # Generate molecule from optimized geometry stored in xyz file
     with io.capture_output() as captured:
@@ -645,11 +620,11 @@ def pyscf_extract(mol, mf, hessian, unpaired):
     # return data
     return data
 # --------------------------------------------- #
-def optimize_and_freqs(molecule,unpaired,charge,functional,basis,bsym=False):
+def optimize_and_freqs(molecule,unpaired,charge,functional,basis,DFTGRID,bsym=False):
     # files
-    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis)
+    xyz_guess,xyz_opt,output_opt,output_frq = files_of_interest(molecule,functional,basis,DFTGRID)
     # check if calculation was already carried out
-    args = (molecule,unpaired,charge,functional,basis,bsym)
+    args = (molecule,unpaired,charge,functional,basis,DFTGRID,bsym)
     # geometry optimization
     if not os.path.exists(xyz_opt): pyscf_carryout_opt(*args)
     # Hessian calculation
