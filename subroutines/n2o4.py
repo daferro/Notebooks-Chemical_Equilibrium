@@ -1,5 +1,3 @@
-#@title <small> 💻 Load Auxiliary Functions Specific for the N2O4/NO2 equilibrium <small> { display-mode: "form" }
-
 NPOINTSYB = 51   # number of yB points (thermo & kinetics)
 last_info = None
 last_fig  = None
