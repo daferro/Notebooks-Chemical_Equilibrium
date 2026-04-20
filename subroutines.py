@@ -460,6 +460,13 @@ def read_xyz(filename):
         coords.append([float(x), float(y), float(z)])
     return symbols, np.array(coords)
 # --------------------------------------------- #
+def show_indented(view, indent_px=40):
+    display(HTML(f"""
+        <div style="margin-left: {indent_px}px;">
+            {view._make_html()}
+        </div>
+    """))
+# --------------------------------------------- #
 def create_visualization_xyz(xyz_file):
     # draw molecule
     view = py3Dmol.view(width=300, height=200)
