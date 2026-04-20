@@ -1,3 +1,5 @@
+from general import *
+
 NPOINTSYB = 51   # number of yB points (thermo & kinetics)
 last_info = None
 last_fig  = None
