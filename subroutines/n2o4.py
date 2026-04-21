@@ -15,9 +15,11 @@ import general
 # ---------------------------------------------- #
 # ============================================== #
 
-NPOINTSYB = 51   # number of yB points (thermo & kinetics)
-last_info = None
-last_fig  = None
+NPOINTSYB   = 51   # number of yB points (thermo & kinetics)
+last_info   = None
+last_fig    = None
+ARRHENIUS_A = None
+ARRHENIUS_B = None
 
 # ============================================= #
 # ---- Specific for N2O4 <-> 2NO2 (PART 1) ---- #
@@ -238,7 +240,7 @@ def get_constants_N2O4(T):
     Kc_o  = Kp_o * P_o/(c_o*R*T) # adimensional
     Kc    = Kc_o * c_o           # mol/m^3
     # Forward rate constant
-    kfw   = arrhenius_A * np.exp(-arrhenius_B/T)
+    kfw   = ARRHENIUS_A * np.exp(-ARRHENIUS_B/T)
     # Backward rate constant
     kbw  = kfw/Kc
     # String with data
@@ -372,9 +374,12 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     string += "\n"
     return string
 # --------------------------------------------- #
-def kinetics_N2O4(T0,P0,V0,yA0,scenario):
+def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
     # --- global variable to update ---
     global last_info
+    global ARRHENIUS_A
+    global ARRHENIUS_B
+    ARRHENIUS_A,ARRHENIUS_B = arrhenius
     # which scenario
     if   "PT" in scenario: scenario = "PT"
     elif "VT" in scenario: scenario = "VT"
