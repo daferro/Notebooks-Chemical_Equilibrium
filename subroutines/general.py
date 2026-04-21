@@ -834,8 +834,11 @@ def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
         for functional,basis in LEVELS:
             key = (functional,basis)
             if key in DFTDATA[molecule]:
-               sigma = DFTDATA[molecule][key]["rotsigma"]
-               line += rf"|    {sigma:2d}    "
+               sigma  = DFTDATA[molecule][key]["rotsigma"]
+               ssigma = str(sigma)
+               while len(ssigma) < mm: ssigma = " "+ssigma+" "
+               if    len(ssigma) > mm: ssigma = ssigma[:-1]
+               line += rf"| {sigma} "
             else: line += "|          "
         print(line)
     print("")
