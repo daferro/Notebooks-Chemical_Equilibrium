@@ -215,11 +215,11 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
     xyz_opt = general.files_of_interest(molecule,key[0],key[1],DFTGRID)[1]
     view    = general.create_visualization_xyz(xyz_opt)
     general.show_indented(view, indent_px=50)
+    # download button
+    general.pyscf_download(molecule,key[0],key[1],DFTGRID,[1])
     # print geometric info
     geominfo = general.geometric_info_xyz(xyz_opt,GEOMINFO[molecule])
     print(geominfo)
-    # download button
-    general.pyscf_download(molecule,key[0],key[1],DFTGRID,[1])
     # print information for partition functions
     general.pyscf_printdata(dftdata)
     print("")
