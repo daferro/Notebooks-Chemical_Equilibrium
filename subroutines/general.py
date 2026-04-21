@@ -816,9 +816,9 @@ def print_info_eq(magnitude,PVT_0,PVT_eq,molecules,xi_eq,n_eq,y_eq,p_eq,P_eq,Kp_
 def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
     nn   = max([len(molecule) for molecule in MOLECULES])
     smol = "Molecule"
-    nn   = max(smol,nn)
+    nn   = max(len(smol),nn)
     while len(smol) < nn: smol = " "+smol+" " 
-    if len(smol) > nn: smol = smol[:-1]
+    if    len(smol) > nn: smol = smol[:-1]
 
     SLEVELS = [rf"{functional}/{basis}" for functional,basis in LEVELS]
     mm      = max([len(slevel) for slevel in SLEVELS])
