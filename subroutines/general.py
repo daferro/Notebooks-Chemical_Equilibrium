@@ -841,6 +841,7 @@ def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
                line += rf"| {ssigma} "
             else: line += "|          "
         print(line)
+    print(divi)
     print("")
 # --------------------------------------------- #
 def geometric_info_xyz(xyz_file,geominfo):
