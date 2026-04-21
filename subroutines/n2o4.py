@@ -37,7 +37,7 @@ def load_n2o4_2no2():
 # --------------------------------------------- #
 def get_xieq_PT_N2O4(T,P,nA0,nB0):
     refdata = load_n2o4_2no2()[0]
-    dG0     = get_DGo(T,refdata)
+    dG0     = general.get_DGo(T,refdata)
     Kp      = np.exp(-dG0/R/T)
     alpha   = Kp * P_o/P
     # solution for second-order equation, knowing that (-nB0/2<= xi <= nA0)
@@ -46,7 +46,7 @@ def get_xieq_PT_N2O4(T,P,nA0,nB0):
 # --------------------------------------------- #
 def get_xieq_VT_N2O4(T,V,nA0,nB0):
     refdata = load_n2o4_2no2()[0]
-    dG0     = get_DGo(T,refdata)
+    dG0     = general.get_DGo(T,refdata)
     Kp      = np.exp(-dG0/R/T)
     beta    = Kp * (P_o*V/R/T)
     # solution for second-order equation, knowing that (-nB0/2<= xi <= nA0)
@@ -62,7 +62,7 @@ def intercept_getGm_N2O4(T,P,yB):
     refdata,molecules,nus,n_0 = load_n2o4_2no2()[0:4]
     xi     = yB_to_xi_N2O4(yB)
     ntot   = n_0.sum() + xi
-    Gtot   = get_G_PT(xi,P,T,n_0,nus,refdata)
+    Gtot   = general.get_G_PT(xi,P,T,n_0,nus,refdata)
     Gm     = Gtot/ntot
     return Gm, Gtot, ntot
 # --------------------------------------------- #
@@ -76,7 +76,7 @@ def intercept_getline_N2O4(T,P,yB_i):
     # value for xi_i
     xi_i  = yB_to_xi_N2O4(yB_i)
     # delta_r G^o (T)
-    dGo_T = get_DGo(T,refdata)
+    dGo_T = general.get_DGo(T,refdata)
     # G_tot
     Gm_i, Gtot_i, ntot_i = intercept_getGm_N2O4(T,P,yB_i)
     # get slope (m)
@@ -157,7 +157,7 @@ def plot_3DeqPT_N2O4(T,P):
 
     # calculate data for each plot
     Z1 = get_xieq_PT_N2O4(T,P,n_0[0],n_0[1])
-    Z2 = get_G_PT(Z1,P,T,n_0,nus,refdata)/(R*T)
+    Z2 = general.get_G_PT(Z1,P,T,n_0,nus,refdata)/(R*T)
 
     # Create figure with two subplots
     # title1 = r'$(a) \;\; z: \;\; \xi_{\mathrm{eq}} \;\; \text{(mol)}$'
@@ -203,19 +203,19 @@ def plot_3DeqPT_N2O4(T,P):
 # ============================================= #
 def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
     print(rf" * Molecule: {molecule:s}")
-    dftdata = optimize_and_freqs(molecule,UNPAIREDS[molecule],CHARGES[molecule],key[0],key[1],DFTGRID,bsym=True)
+    dftdata = general.optimize_and_freqs(molecule,UNPAIREDS[molecule],CHARGES[molecule],key[0],key[1],DFTGRID,bsym=True)
     print("")
     # visualize molecule
-    xyz_opt = files_of_interest(molecule,key[0],key[1],DFTGRID)[1]
-    view    = create_visualization_xyz(xyz_opt)
-    show_indented(view, indent_px=50)
+    xyz_opt = general.files_of_interest(molecule,key[0],key[1],DFTGRID)[1]
+    view    = general.create_visualization_xyz(xyz_opt)
+    general.show_indented(view, indent_px=50)
     # print geometric info
-    geominfo = geometric_info_xyz(xyz_opt,GEOMINFO[molecule])
+    geominfo = general.geometric_info_xyz(xyz_opt,GEOMINFO[molecule])
     print(geominfo)
     # download button
-    pyscf_download(molecule,key[0],key[1],DFTGRID,[1])
+    general.pyscf_download(molecule,key[0],key[1],DFTGRID,[1])
     # print information for partition functions
-    pyscf_printdata(DFTDATA[molecule][key])
+    general.pyscf_printdata(DFTDATA[molecule][key])
     print("")
     return dftdata
 # ============================================= #
@@ -226,7 +226,7 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
 # ============================================= #
 def get_constants_N2O4(T):
     # Gibbs free energy from experimental data
-    DGo   = get_DGo(T,load_n2o4_2no2()[0])
+    DGo   = general.get_DGo(T,load_n2o4_2no2()[0])
     # Equilibrium constant(s)
     Kp_o  = np.exp(-DGo/R/T)
     Kc_o  = Kp_o * P_o/(c_o*R*T) # adimensional

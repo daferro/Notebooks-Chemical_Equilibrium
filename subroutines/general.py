@@ -11,13 +11,11 @@ import plotly.graph_objects as go                #
 from   plotly.subplots      import make_subplots #
 # ---------------------------------------------- #
 from   scipy.optimize  import minimize           #
-from   scipy.optimize  import minimize_scalar    #
 from   scipy.optimize  import root_scalar        #
 # ---------------------------------------------- #
 import pubchempy       as     pcp                # to retrieve from PubChem
 # ---------------------------------------------- #
 import rdkit                                     # SMILES --> coordinates
-from   rdkit           import RDLogger           #
 from   rdkit           import Chem               #
 from   rdkit.Chem      import AllChem            #
 # ---------------------------------------------- #
@@ -30,13 +28,13 @@ from   pyscf.hessian   import thermo             #
 import ipywidgets      as     w                  # to add buttons
 # ---------------------------------------------- #
 from   google.colab    import files              # to access to generated files
-from   google.colab    import output             #
 from   IPython.utils   import io                 # to capture output
 from   IPython.display import HTML               # needed for 3D visualization
 from   IPython.display import display            # needed for 3D visualization
 from   IPython.display import Markdown           # needed for 3D visualization
 # ---------------------------------------------- #
-from   constants       import m_u,m_e,q_e,h,k_B,c_0,eps0,NA
+from   constants       import m_u,m_e,q_e,h
+from   constants       import k_B,c_0,eps0,NA
 from   constants       import P_o,c_o,R,hbar,a_0,Eh,Hz_au
 from   constants       import NPOINTST,NPOINTSXI,REL_XI_EQ
 from   constants       import ZERO1,ZERO2,ZERO3,ZERO4
