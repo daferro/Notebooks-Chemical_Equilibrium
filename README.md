@@ -14,9 +14,8 @@ You may either download the notebooks for local use or **open them directly onli
 - **Notebook 2 — General framework for elementary gas-phase reactions**  
   A more general notebook that can be applied to **other elementary gas-phase reactions**, focusing on the equilibrium description from **classical thermodynamics** and **statistical mechanics**. A *PDF* is also included, describing the setup and summarizing results for two reactions beyond the case study.
 
-<div style="margin-left: 2em;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook2.ipynb)
-</div>
 
 
 These materials accompany a manuscript submitted to the *Journal of Chemical Education* and are suitable for classroom demonstrations, guided-inquiry activities, or independent student study.
