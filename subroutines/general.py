@@ -210,7 +210,7 @@ def pyscf_download(molecule,functional,basis,DFTGRID,which_ones=[]):
 
 
 # ============================================= #
-# Functions for part 1: CHEMICAL THERMODYNAMICS #
+# Functions for PART 1: CHEMICAL THERMODYNAMICS #
 # ============================================= #
 # In following functions, it is assumed that    #
 # all data are provided in SI units.            #
@@ -339,7 +339,7 @@ def get_xieq_VT(V,T,n_0,nus,refdata):
 
 
 # ============================================= #
-# Functions for part 2: STATIST.-THERMODYNAMICS #
+# Functions for PART 2: STATIST.-THERMODYNAMICS #
 # ============================================= #
 def level_to_string(functional,basis):
     level      = rf"{functional.upper():s}_{basis.upper():s}"
@@ -811,6 +811,33 @@ def print_info_eq(magnitude,PVT_0,PVT_eq,molecules,xi_eq,n_eq,y_eq,p_eq,P_eq,Kp_
         if Ky_v2 is not None:
           print(fr"   Value of Ky:")
           print(fr"   * from Delta_r{{G}}^* --> Ky = {Ky_v2:{sformat2}}")
+    print("")
+# --------------------------------------------- #
+def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
+    nn   = max([len(molecule) for molecule in MOLECULES])
+    smol = "Molecule"
+    nn   = max(smol,nn)
+    while len(smol) < nn: smol = " "+smol+" " 
+    if len(smol) > nn: smol = smol[:-1]
+
+    SLEVELS = [rf"{functional}/{basis}" for functional,basis in LEVELS]
+    mm      = max([len(slevel) for slevel in SLEVELS])
+    SLEVELS = [("%%%is"%mm)%slevel for slevel in SLEVELS]
+
+    line = rf" {smol} | "+ " | ".join([slevel for slevel in SLEVELS])
+    divi = "-"*len(line)
+    print(line)
+    print(divi)
+    for molecule in MOLECULES:
+        if molecule not in DFTDATA: continue
+        line = rf" {molecule:8s} "
+        for functional,basis in LEVELS:
+            key = (functional,basis)
+            if key in DFTDATA[molecule]:
+               sigma = DFTDATA[molecule][key]["rotsigma"]
+               line += rf"|    {sigma:2d}    "
+            else: line += "|          "
+        print(line)
     print("")
 # --------------------------------------------- #
 def geometric_info_xyz(xyz_file,geominfo):
