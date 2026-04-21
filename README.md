@@ -9,12 +9,12 @@ You may either download the notebooks for local use or **open them directly onli
 - **Notebook 1 — Case study: N₂O₄ ⇌ 2 NO₂**  
   A guided, classroom-tested notebook built around the thermal dissociation of dinitrogen tetroxide. The repository also includes a **student handout (PDF)** with guided activities and exercises for this case study. The handout will be updated over time as the materials are refined.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook1.ipynb)
+&nbsp;&nbsp;&nbsp;[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook1.ipynb)
 
 - **Notebook 2 — General framework for elementary gas-phase reactions**  
   A more general notebook that can be applied to **other elementary gas-phase reactions**, focusing on the equilibrium description from **classical thermodynamics** and **statistical mechanics**. A *PDF* is also included, describing the setup and summarizing results for two reactions beyond the case study.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook2.ipynb)
+&nbsp;&nbsp;&nbsp;[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daferro/Notebooks-Chemical_Equilibrium/blob/main/Notebook2.ipynb)
 
 These materials accompany a manuscript submitted to the *Journal of Chemical Education* and are suitable for classroom demonstrations, guided-inquiry activities, or independent student study.
 
