@@ -221,7 +221,7 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
     # download button
     general.pyscf_download(molecule,key[0],key[1],DFTGRID,[1])
     # print information for partition functions
-    general.pyscf_printdata(DFTDATA[molecule][key])
+    general.pyscf_printdata(dftdata)
     print("")
     return dftdata
 # ============================================= #
