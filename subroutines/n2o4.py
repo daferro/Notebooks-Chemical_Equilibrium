@@ -2,6 +2,7 @@
 import numpy                as np
 # ---------------------------------------------- #
 import matplotlib.pyplot    as plt
+import plotly.graph_objects as go                #
 from   plotly.subplots      import make_subplots #
 # ---------------------------------------------- #
 from   constants            import m_u,m_e,q_e,h,k_B,c_0,eps0,NA
