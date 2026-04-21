@@ -838,7 +838,7 @@ def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
                ssigma = str(sigma)
                while len(ssigma) < mm: ssigma = " "+ssigma+" "
                if    len(ssigma) > mm: ssigma = ssigma[:-1]
-               line += rf"| {sigma} "
+               line += rf"| {ssigma} "
             else: line += "|          "
         print(line)
     print("")
