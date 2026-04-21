@@ -830,7 +830,7 @@ def print_sym_nums(MOLECULES,LEVELS,DFTDATA):
     print(divi)
     for molecule in MOLECULES:
         if molecule not in DFTDATA: continue
-        line = rf" {molecule:{nn:i}s} "
+        line = rf" {molecule:{nn}s} "
         for functional,basis in LEVELS:
             key = (functional,basis)
             if key in DFTDATA[molecule]:
