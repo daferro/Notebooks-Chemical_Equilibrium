@@ -34,7 +34,7 @@ from   IPython.display import Markdown           # needed for 3D visualization
 from   constants       import m_u,m_e,q_e,h
 from   constants       import k_B,c_0,eps0,NA
 from   constants       import P_o,c_o,R,hbar,a_0,Eh,Hz_au
-from   constants       import NPOINTST,NPOINTSXI,REL_XI_EQ
+from   constants       import NPOINTSXI,REL_XI_EQ
 from   constants       import ZERO1,ZERO2,ZERO3,ZERO4
 from   constants       import FONTSIZE
 # ============================================== #

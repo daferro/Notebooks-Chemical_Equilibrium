@@ -6,11 +6,11 @@ import matplotlib.ticker    as mticker           #
 import plotly.graph_objects as go                #
 from   plotly.subplots      import make_subplots #
 # ---------------------------------------------- #
-from   constants            import m_u,m_e,q_e,h,k_B,c_0,eps0,NA
-from   constants            import P_o,c_o,R,hbar,a_0,Eh,Hz_au
-from   constants            import NPOINTST,NPOINTSXI,REL_XI_EQ
-from   constants            import ZERO1,ZERO2,ZERO3,ZERO4
-from   constants            import FONTSIZE
+from   constants            import P_o,c_o,R     #
+from   constants            import NPOINTSXI     #
+from   constants            import REL_XI_EQ     #
+from   constants            import ZERO4         #
+from   constants            import FONTSIZE      #
 # ---------------------------------------------- #
 import general
 # ---------------------------------------------- #
