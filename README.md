@@ -2,7 +2,9 @@
 
 This repository contains Jupyter/Python notebooks developed to support the teaching of **gas-phase chemical equilibrium** through an integrated **thermodynamic**, **kinetic**, and **statistical-mechanical** approach. The notebooks include interactive simulations of equilibrium shifts, time-dependent kinetic relaxation, and calculations that link molecular properties and partition functions to macroscopic observables.
 
-You may either download the notebooks for local use or **open them directly online using the corresponding links (see below)**:
+You may either download the notebooks for local use or **open them directly online by clicking the _Open in Colab_ icon**
+![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)
+**shown below**:
 
 ## Contents
 
