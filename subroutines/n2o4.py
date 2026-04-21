@@ -96,7 +96,7 @@ def plot_intercept_N2O4(T,P,yB):
     n0      = nA0+nB0
     # equilibrium
     xi_eq   = get_xieq_PT_N2O4(T,P,nA0,nB0)
-    yB_eq   = (n_0[1]+2*xi_eq)/(n0 + xi_eq)
+    yB_eq   = (nB0+2*xi_eq)/(n0 + xi_eq)
     Gtot_eq = intercept_getGm_N2O4(T,P,yB_eq)[1]
     # Get data in terms of yB_i
     lGm,lGtot,lntot = [],[],[]
