@@ -8,7 +8,6 @@ import numpy                as np                #
 import matplotlib.pyplot    as plt               #
 import matplotlib.ticker    as mticker           #
 # ---------------------------------------------- #
-from   scipy.optimize  import minimize           #
 from   scipy.optimize  import root_scalar        #
 # ---------------------------------------------- #
 import pubchempy       as     pcp                # to retrieve from PubChem
