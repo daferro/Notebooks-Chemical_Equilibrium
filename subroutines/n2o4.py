@@ -419,12 +419,12 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
     STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
     STRING += rf"   * At equilibrium:"+"\n\n"
     STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
-    # calculate time for 99%
-    xi_99 = xieq*0.99
-    if scenario == "VT": time_99 = xi2time_VT_N2O4(xi_99,xi1,xi2,kbw,V0   )
-    if scenario == "PT": time_99 = xi2time_PT_N2O4(xi_99,xi1,xi2,kfw,alpha)
-    unitst,factor = factor_for_time(time_99)
-    STRING += rf"   * It required {time_99*factor:.2f} {unitst} to reach xi = 0.99*xi_eq"+"\n\n"
+    # calculate time for 99.9%
+    xi_given = xieq*0.999
+    if scenario == "VT": time_given = xi2time_VT_N2O4(xi_given,xi1,xi2,kbw,V0   )
+    if scenario == "PT": time_given = xi2time_PT_N2O4(xi_given,xi1,xi2,kfw,alpha)
+    unitst,factor = factor_for_time(time_given)
+    STRING += rf"   * It required {time_given*factor:.2f} {unitst} to reach xi = 0.999*xi_eq"+"\n\n"
     # update global variable for string 
     last_info = STRING
     # plot data
