@@ -414,19 +414,18 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
     xis    = np.linspace(0,REL_XI_EQ*xieq,NPOINTSXI)
     if scenario == "VT": times = [xi2time_VT_N2O4(xi,xi1,xi2,kbw,V0   ) for xi in xis]
     if scenario == "PT": times = [xi2time_PT_N2O4(xi,xi1,xi2,kfw,alpha) for xi in xis]
+    # String with information
+    STRING += rf"   * Initial conditions:"+"\n\n"
+    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
+    STRING += rf"   * At equilibrium:"+"\n\n"
+    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
     # calculate time for 99%
     xi_99 = xieq*0.99
     if scenario == "VT": time_99 = xi2time_VT_N2O4(xi_99,xi1,xi2,kbw,V0   )
     if scenario == "PT": time_99 = xi2time_PT_N2O4(xi_99,xi1,xi2,kfw,alpha)
-    # String with information
-    STRING += rf"   * Initial conditions:"+"\n\n"
-    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
-
     unitst,factor = factor_for_time(time_99)
-    STRING += rf"   * At xi = 0.99*xi_eq requires {time_99*factor:.2f} {unitst}"+"\n\n"
-
-    STRING += rf"   * At equilibrium:"+"\n\n"
-    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
+    STRING += rf"   * It required {time_99*factor:.2f} {unitst} to reach xi = 0.99*xi_eq"+"\n\n"
+    # update global variable for string 
     last_info = STRING
     # plot data
     plot_kinetics_N2O4(np.array(times),xis,xieq,T0,P0,V0,yA0,scenario)
