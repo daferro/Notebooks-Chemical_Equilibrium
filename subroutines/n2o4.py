@@ -233,6 +233,12 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
 # ============================================= #
 # ---- Specific for N2O4 <-> 2NO2 (PART 3) ---- #
 # ============================================= #
+def factor_for_time(t_i):
+    for unitst,factor in [("hour",1/360) , ("min",1/60) , ("s",1E0) , ("ms",1E3) , ("$\\mu$s",1E6) , ("ns",1E9)]:
+        last_t = t_i*factor
+        if last_t > 0.5: break
+    return unitst,factor
+# --------------------------------------------- #
 def get_constants_N2O4(T):
     # Gibbs free energy from experimental data
     DGo   = general.get_DGo(T,load_n2o4_2no2()[0])
@@ -408,22 +414,30 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
     xis    = np.linspace(0,REL_XI_EQ*xieq,NPOINTSXI)
     if scenario == "VT": times = [xi2time_VT_N2O4(xi,xi1,xi2,kbw,V0   ) for xi in xis]
     if scenario == "PT": times = [xi2time_PT_N2O4(xi,xi1,xi2,kfw,alpha) for xi in xis]
-    # for t_i,xi_i in zip(times,xis): print(t_i,xi_i)
+    # calculate time for 99%
+    xi_99 = xieq*0.99
+    if scenario == "VT": time_99 = xi2time_VT_N2O4(xi_99,xi1,xi2,kbw,V0   )
+    if scenario == "PT": time_99 = xi2time_PT_N2O4(xi_99,xi1,xi2,kfw,alpha)
     # String with information
     STRING += rf"   * Initial conditions:"+"\n\n"
     STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
+
+    unitst,factor = factor_for_time(time_99)
+    STRING += rf"   * At xi = 0.99*xi_eq requires {time_99*factor:.2f} {unitst}"+"\n\n"
+
     STRING += rf"   * At equilibrium:"+"\n\n"
     STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
     last_info = STRING
     # plot data
     plot_kinetics_N2O4(np.array(times),xis,xieq,T0,P0,V0,yA0,scenario)
-# ============================================= #
+# --------------------------------------------- #
 def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
 
     # select good units for time (among secs, milisecs, microsecs and nanosecs)
-    for unitst,factor in [("s",1E0) , ("ms",1E3) , ("$\\mu$s",1E6) , ("ns",1E9)]:
-        last_t = times[-1]*factor
-        if last_t > 0.5: break
+    unitst,factor = factor_for_time(times[-1])
+   #for unitst,factor in [("s",1E0) , ("ms",1E3) , ("$\\mu$s",1E6) , ("ns",1E9)]:
+   #    last_t = times[-1]*factor
+   #    if last_t > 0.5: break
 
     dataeq = xi_to_data_N2O4(xieq,T0,P0,V0,yA0,scenario)
     yA,yB = [],[]
