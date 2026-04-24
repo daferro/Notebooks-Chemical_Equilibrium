@@ -21,6 +21,14 @@ last_info   = None
 last_fig    = None
 ARRHENIUS_A = None
 ARRHENIUS_B = None
+TFACTORS    = [("years"  ,1/360/24/365)]
+TFACTORS   += [("days"   ,1/360/24    )]
+TFACTORS   += [("hour"   ,1/360       )]
+TFACTORS   += [("min"    ,1/60        )]
+TFACTORS   += [("s"      ,1           )]
+TFACTORS   += [("ms"     ,1E3         )]
+TFACTORS   += [("$\\mu$s",1E6         )]
+TFACTORS   += [("ns"     ,1E9         )]
 
 # ============================================= #
 # ---- Specific for N2O4 <-> 2NO2 (PART 1) ---- #
@@ -234,7 +242,7 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
 # ---- Specific for N2O4 <-> 2NO2 (PART 3) ---- #
 # ============================================= #
 def factor_for_time(t_i):
-    for unitst,factor in [("hour",1/360) , ("min",1/60) , ("s",1E0) , ("ms",1E3) , ("$\\mu$s",1E6) , ("ns",1E9)]:
+    for unitst,factor in TFACTORS:
         last_t = t_i*factor
         if last_t > 0.5: break
     return unitst,factor
