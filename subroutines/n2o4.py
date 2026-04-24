@@ -368,8 +368,8 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     string += rf"       extent (xi) = {xi:6.3f} mol"+"\n"
     if "VT" in scenario: string += rf"       A(xi)-A(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
     if "PT" in scenario: string += rf"       G(xi)-G(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
-    if pA == 0.0: string += rf"       ==> Qp^o = infinity"+"\n"
-    else        : string += rf"       ==> Qp^o = {(pB*pB)/(pA*P_o):.3E}"+"\n"
+    if pA == 0.0       : string += rf"       Qp^o        = infinity"+"\n"
+    else               : string += rf"       Qp^o        = {(pB*pB)/(pA*P_o):.3E}"+"\n"
     string += "\n"
 
     string += rf"       data for N2O4"+"\n"
