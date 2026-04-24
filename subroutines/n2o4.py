@@ -504,7 +504,7 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     plt.show()
     plt.close(fig)
 # --------------------------------------------- #
-def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
+def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius,output_widget):
     # --- global variable to update ---
     global last_info
     global ARRHENIUS_A
@@ -552,6 +552,8 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
     last_info = STRING
     # plot data
     plot_kinetics_N2O4(np.array(times),xis,xieq,T0,P0,V0,yA0,scenario)
-    print(last_info)
+    with output_widget:
+         output_widget.clear_output()
+         print(last_info)
 # ============================================= #
 
