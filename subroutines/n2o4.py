@@ -415,7 +415,8 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
         P.append(P_i)
 
     plt.rcParams['text.usetex'] = True
-    fig, axs = plt.subplots(2, 3, figsize=(12,6))
+   #fig, axs = plt.subplots(2, 3, figsize=(12,6))
+    fig, axs = plt.subplots(3, 2, figsize=(8,9))
     fig.suptitle(rf'$(P,V,T)_0 = ({P0*1E-5:.2f} \; {{\rm bar}},{V0*1E3:.2f} \; {{\rm L}},{T0:.2f} \; {{\rm K}})$; $y_{{\rm N_2O_4}}(0)={yA0:.2f}$', fontsize=FONTSIZE[2])
     # -------------------------------------
     # (a) Population
@@ -433,7 +434,7 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[0, 0].legend(frameon=False)
 
     # -------------------------------------
-    # (b) ξ vs time
+    # (b) ξ vs time [0,1]
     # -------------------------------------
     nA0,nB0 = xi_to_data_N2O4(0,T0,P0,V0,yA0,scenario)[0]
     xlim1   = -nB0/2
@@ -449,17 +450,17 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[0, 1].set_title('(b)')
 
     # -------------------------------------
-    # (c) Q vs time
+    # (c) Q vs time [0,2]
     # -------------------------------------
     xx,yy=factor*times[1:], Qp[1:]
-    axs[0,2].plot(xx,yy,ls='-',color='k',zorder=2)
-    axs[0,2].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
-    axs[0,2].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
-    axs[0,2].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[0,2].set_title('(c)')
+    axs[2,0].plot(xx,yy,ls='-',color='k',zorder=2)
+    axs[2,0].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
+    axs[2,0].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
+    axs[2,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[2,0].set_title('(c)')
 
     # -------------------------------------
-    # (d) P(or V) vs time
+    # (d) P(or V) vs time [1,0]
     # -------------------------------------
     if "PT" in scenario:
         axs[1,0].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
@@ -471,7 +472,7 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[1,0].set_title('(d)')
 
     # -------------------------------------
-    # (e) dξ/dt vs time
+    # (e) dξ/dt vs time [1,1]
     # -------------------------------------
     Kpo,Kco,kfw = get_constants_N2O4(T0)[1:4]
     dxidt_ana       = kfw*np.array(nA)*(1-Qp/Kpo)
@@ -483,16 +484,16 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[1, 1].set_title('(e)')
 
     # -------------------------------------
-    # (f) G or A vs time
+    # (f) G or A vs time [1,2]
     # -------------------------------------
     yy = [Ei/(R*T0) for Ei in AG]
-    axs[1, 2].plot(times*factor,yy,color='k')
-    axs[1, 2].axhline(y=dataeq[6]/(R*T0),ls=":",color="k",zorder=1)
+    axs[2,1].plot(times*factor,yy,color='k')
+    axs[2,1].axhline(y=dataeq[6]/(R*T0),ls=":",color="k",zorder=1)
     if "PT" in scenario: key = "G"
     if "VT" in scenario: key = "A"
-    axs[1, 2].set_ylabel(rf'$\left({key:s}(\xi)-{key:s}(0)\right) / (RT)$ (mol)',fontsize=FONTSIZE[2])
-    axs[1, 2].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[1, 2].set_title('(f)')
+    axs[2,1].set_ylabel(rf'$\left({key:s}(\xi)-{key:s}(0)\right) / (RT)$ (mol)',fontsize=FONTSIZE[2])
+    axs[2,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[2,1].set_title('(f)')
 
     # --- update global variable: last_fig ---
     fig.subplots_adjust(wspace=0.3)
