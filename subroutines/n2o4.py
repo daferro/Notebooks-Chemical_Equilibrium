@@ -549,8 +549,7 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius,output_widget):
     if scenario == "VT": time_given = xi2time_VT_N2O4(xi_given,xi1,xi2,kbw,V0   )
     if scenario == "PT": time_given = xi2time_PT_N2O4(xi_given,xi1,xi2,kfw,alpha)
     unitst,factor = factor_for_time(time_given)
-    STRING += rf"   * It took {time_given*factor:.2f} {unitst} for"
-    STRING += rf"$\xi$ to reach 0.999*$\xi_{{\rm eq}}$"+"\n\n"
+    STRING += rf"   * It took {time_given*factor:.2f} {unitst} for xi to reach 0.999*xi_eq"+"\n\n"
     # update global variable for string 
     last_info = STRING
     # plot data
