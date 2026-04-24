@@ -364,19 +364,19 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     (nA,nB),(pA,pB),(yA,yB),(cA,cB),(n,P,V),Qp,E = xi_to_data_N2O4(xi,T0,p0,V0,yA0,scenario)
     # string with information
     string  = rf"       (P , V , T) = ({P*1E-5:6.2f} bar , {V*1E3:6.2f} L , {T0:6.2f} K)"+"\n"
-    string += "\n"
     string += rf"       num. moles  = {n:6.3f} mol"+"\n"
     string += rf"       extent (xi) = {xi:6.3f} mol"+"\n"
-    string += "\n"
     if "VT" in scenario: string += rf"       A(xi)-A(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
     if "PT" in scenario: string += rf"       G(xi)-G(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
     string += "\n"
+
     string += rf"       data for N2O4"+"\n"
     string += rf"         - number of moles  = {nA:6.3f} mol"+"\n"
     string += rf"         - mole fraction    = {yA:6.3f} mol"+"\n"
     string += rf"         - partial pressure = {pA*1E-5:6.3f} bar"+"\n"
     string += rf"         - concentration    = {cA/1000:8.2E} M"+"\n"
     string += "\n"
+
     string += rf"       data for NO2"+"\n"
     string += rf"         - number of moles  = {nB:6.3f} mol"+"\n"
     string += rf"         - mole fraction    = {yB:6.3f} mol"+"\n"
@@ -475,24 +475,24 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[1,1].set_title('(d)')
 
     # -------------------------------------
-    # (e) Q vs time
+    # (e) G or A vs time
     # -------------------------------------
-    xx,yy=factor*times[1:], Qp[1:]
-    axs[2,0].plot(xx,yy,ls='-',color='k',zorder=2)
-    axs[2,0].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
-    axs[2,0].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
+    yy = [Ei/(R*T0) for Ei in AG]
+    axs[2,0].plot(times*factor,yy,color='k')
+    axs[2,0].axhline(y=dataeq[6]/(R*T0),ls=":",color="k",zorder=1)
+    if "PT" in scenario: key = "G"
+    if "VT" in scenario: key = "A"
+    axs[2,0].set_ylabel(rf'$\left({key:s}(\xi)-{key:s}(0)\right) / (RT)$ (mol)',fontsize=FONTSIZE[2])
     axs[2,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
     axs[2,0].set_title('(e)')
 
     # -------------------------------------
-    # (f) G or A vs time
+    # (f) Q vs time
     # -------------------------------------
-    yy = [Ei/(R*T0) for Ei in AG]
-    axs[2,1].plot(times*factor,yy,color='k')
-    axs[2,1].axhline(y=dataeq[6]/(R*T0),ls=":",color="k",zorder=1)
-    if "PT" in scenario: key = "G"
-    if "VT" in scenario: key = "A"
-    axs[2,1].set_ylabel(rf'$\left({key:s}(\xi)-{key:s}(0)\right) / (RT)$ (mol)',fontsize=FONTSIZE[2])
+    xx,yy=factor*times[1:], Qp[1:]
+    axs[2,1].plot(xx,yy,ls='-',color='k',zorder=2)
+    axs[2,1].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
+    axs[2,1].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
     axs[2,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
     axs[2,1].set_title('(f)')
 
@@ -549,7 +549,7 @@ def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius,output_widget):
     if scenario == "VT": time_given = xi2time_VT_N2O4(xi_given,xi1,xi2,kbw,V0   )
     if scenario == "PT": time_given = xi2time_PT_N2O4(xi_given,xi1,xi2,kfw,alpha)
     unitst,factor = factor_for_time(time_given)
-    STRING += rf"   * It required {time_given*factor:.2f} {unitst} to reach xi = 0.999*xi_eq"+"\n\n"
+    STRING += rf"   * It took {time_given*factor:.2f} {unitst} for $\xi$ to reach 0.999*$\xi_{\\rm eq}$"+"\n\n"
     # update global variable for string 
     last_info = STRING
     # plot data
