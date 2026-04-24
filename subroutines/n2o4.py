@@ -363,7 +363,7 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     # calculate more magnitudes
     (nA,nB),(pA,pB),(yA,yB),(cA,cB),(n,P,V),Qp,E = xi_to_data_N2O4(xi,T0,p0,V0,yA0,scenario)
     # string with information
-    string  = rf"       (P,V,T)     = ({P*1E-5:6.2f} bar , {V*1E3:6.2f} L , {T0:6.2f} K)"+"\n"
+    string  = rf"       (P,V,T)     = ({P*1E-5:.2f} bar, {V*1E3:.2f} L, {T0:.2f} K)"+"\n"
     string += rf"       num. moles  = {n:6.3f} mol"+"\n"
     string += rf"       extent (xi) = {xi:6.3f} mol"+"\n"
     if "VT" in scenario: string += rf"       A(xi)-A(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
