@@ -418,70 +418,71 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
    #fig, axs = plt.subplots(2, 3, figsize=(12,6))
     fig, axs = plt.subplots(3, 2, figsize=(8,9))
     fig.suptitle(rf'$(P,V,T)_0 = ({P0*1E-5:.2f} \; {{\rm bar}},{V0*1E3:.2f} \; {{\rm L}},{T0:.2f} \; {{\rm K}})$; $y_{{\rm N_2O_4}}(0)={yA0:.2f}$', fontsize=FONTSIZE[2])
-    # -------------------------------------
-    # (a) Population
-    # -------------------------------------
-    axs[0, 0].plot(times*factor,yA,color='k',label=r'i=N$_2$O$_4$')
-    axs[0, 0].axhline(y=dataeq[2][0],color="k",ls=":",zorder=1)
-
-    axs[0, 0].plot(times*factor,yB,color='r',label=r'i=NO$_2$')
-    axs[0, 0].axhline(y=dataeq[2][1],color="r",ls=":",zorder=1)
-
-    axs[0, 0].yaxis.set_major_locator(mticker.MultipleLocator(0.2))
-    axs[0, 0].set_ylabel(r'$y_i$',fontsize=FONTSIZE[2])
-    axs[0, 0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[0, 0].set_title('(a)')
-    axs[0, 0].legend(frameon=False)
 
     # -------------------------------------
-    # (b) ξ vs time
+    # (a) ξ vs time [0,0]
     # -------------------------------------
     nA0,nB0 = xi_to_data_N2O4(0,T0,P0,V0,yA0,scenario)[0]
     xlim1   = -nB0/2
     xlim2   = +nA0
-    axs[0,1].plot(times*factor,xis,ls='-',color='k')
-    axs[0,1].axhline(y=xieq,ls=":",color="k",zorder=1)
+    axs[0,0].plot(times*factor,xis,ls='-',color='k')
+    axs[0,0].axhline(y=xieq,ls=":",color="k",zorder=1)
 
-    axs[0,1].set_ylabel('$\\xi$ (mol)',fontsize=FONTSIZE[2])
-    # axs[0, 1].set_ylim(xlim1,xlim2)
-    axs[0,1].yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+    axs[0,0].set_ylabel('$\\xi$ (mol)',fontsize=FONTSIZE[2])
+    # axs[0,0].set_ylim(xlim1,xlim2)
+    axs[0,0].yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
 
+    axs[0,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[0,0].set_title('(a)')
+
+    # -------------------------------------
+    # (b) dξ/dt vs time
+    # -------------------------------------
+    Kpo,Kco,kfw = get_constants_N2O4(T0)[1:4]
+    dxidt_ana       = kfw*np.array(nA)*(1-Qp/Kpo)
+    axs[0,1].plot(times*factor,dxidt_ana/factor,ls='-',color='k')
+    # dxidt_num       = np.gradient(xis,times)
+    # axs[1, 1].plot(times*factor,dxidt_num/factor,'rx')
+    axs[0,1].set_ylabel(rf'd$\xi$/d$t$ (mol/{unitst:s})',fontsize=FONTSIZE[2])
     axs[0,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
     axs[0,1].set_title('(b)')
 
     # -------------------------------------
-    # (c) Q vs time
+    # (c) molar fraction
+    # -------------------------------------
+    axs[1,0].plot(times*factor,yA,color='k',label=r'i=N$_2$O$_4$')
+    axs[1,0].axhline(y=dataeq[2][0],color="k",ls=":",zorder=1)
+
+    axs[1,0].plot(times*factor,yB,color='r',label=r'i=NO$_2$')
+    axs[1,0].axhline(y=dataeq[2][1],color="r",ls=":",zorder=1)
+
+    axs[1,0].yaxis.set_major_locator(mticker.MultipleLocator(0.2))
+    axs[1,0].set_ylabel(r'$y_i$',fontsize=FONTSIZE[2])
+    axs[1,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[1,0].set_title('(c)')
+    axs[1,0].legend(frameon=False)
+
+    # -------------------------------------
+    # (d) P(or V) vs time
+    # -------------------------------------
+    if "PT" in scenario:
+        axs[1,1].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
+        axs[1,1].set_ylabel('$V$ (L)',fontsize=14)
+    if "VT" in scenario:
+        axs[1,1].plot(times*factor,np.array(P)*1E-5,ls='-',color='k')
+        axs[1,1].set_ylabel('$P$ (bar)',fontsize=FONTSIZE[2])
+    axs[1,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[1,1].set_title('(d)')
+
+    # -------------------------------------
+    # (e) Q vs time
     # -------------------------------------
     xx,yy=factor*times[1:], Qp[1:]
     axs[2,0].plot(xx,yy,ls='-',color='k',zorder=2)
     axs[2,0].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
     axs[2,0].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
     axs[2,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[2,0].set_title('(c)')
-
-    # -------------------------------------
-    # (d) P(or V) vs time
-    # -------------------------------------
-    if "PT" in scenario:
-        axs[1,0].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
-        axs[1,0].set_ylabel('$V$ (L)',fontsize=14)
-    if "VT" in scenario:
-        axs[1,0].plot(times*factor,np.array(P)*1E-5,ls='-',color='k')
-        axs[1,0].set_ylabel('$P$ (bar)',fontsize=FONTSIZE[2])
-    axs[1,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[1,0].set_title('(d)')
-
-    # -------------------------------------
-    # (e) dξ/dt vs time
-    # -------------------------------------
-    Kpo,Kco,kfw = get_constants_N2O4(T0)[1:4]
-    dxidt_ana       = kfw*np.array(nA)*(1-Qp/Kpo)
-    axs[1,1].plot(times*factor,dxidt_ana/factor,ls='-',color='k')
-    # dxidt_num       = np.gradient(xis,times)
-    # axs[1, 1].plot(times*factor,dxidt_num/factor,'rx')
-    axs[1,1].set_ylabel(rf'd$\xi$/d$t$ (mol/{unitst:s})',fontsize=FONTSIZE[2])
-    axs[1,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[1,1].set_title('(e)')
+    axs[2,0].set_title('(e)')
 
     # -------------------------------------
     # (f) G or A vs time
