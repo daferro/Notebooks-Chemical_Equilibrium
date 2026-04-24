@@ -381,55 +381,6 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     string += "\n"
     return string
 # --------------------------------------------- #
-def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
-    # --- global variable to update ---
-    global last_info
-    global ARRHENIUS_A
-    global ARRHENIUS_B
-    ARRHENIUS_A,ARRHENIUS_B = arrhenius
-    # which scenario
-    if   "PT" in scenario: scenario = "PT"
-    elif "VT" in scenario: scenario = "VT"
-    else: raise Exception
-    # Get data for this reaction
-    DGo,Kp_o,Kc_o,kfw,kbw,STRING = get_constants_N2O4(T0)
-    # Determine xieq, xi1 and xi2
-    (nA0,nB0) = xi_to_data_N2O4(0,T0,P0,V0,yA0,scenario)[0]
-    if scenario == "VT":
-       xieq = get_xieq_VT_N2O4(T0,V0,nA0,nB0)
-       Kc   = kfw/kbw
-       lamb = 4*(kbw/V0)
-       a0   = (nB0**2/4 - nA0*V0*Kc/4)
-       a1   = (nB0      +     V0*Kc/4)
-       xi1  = (-a1 + np.sqrt(a1**2-4*a0))/2
-       xi2  = (-a1 - np.sqrt(a1**2-4*a0))/2
-    if scenario == "PT":
-       xieq  = get_xieq_PT_N2O4(T0,P0,nA0,nB0)
-       alpha = kbw*P0/(R*T0)
-       beta  = kfw + 4*alpha
-       s     = np.sqrt(kfw/beta)
-       xi1   = (-nB0+(2*nA0+nB0)*s)/2
-       xi2   = (-nB0-(2*nA0+nB0)*s)/2
-    # Calculate from xi = 0 to xieq
-    xis    = np.linspace(0,REL_XI_EQ*xieq,NPOINTSXI)
-    if scenario == "VT": times = [xi2time_VT_N2O4(xi,xi1,xi2,kbw,V0   ) for xi in xis]
-    if scenario == "PT": times = [xi2time_PT_N2O4(xi,xi1,xi2,kfw,alpha) for xi in xis]
-    # String with information
-    STRING += rf"   * Initial conditions:"+"\n\n"
-    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
-    STRING += rf"   * At equilibrium:"+"\n\n"
-    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
-    # calculate time for 99.9%
-    xi_given = xieq*0.999
-    if scenario == "VT": time_given = xi2time_VT_N2O4(xi_given,xi1,xi2,kbw,V0   )
-    if scenario == "PT": time_given = xi2time_PT_N2O4(xi_given,xi1,xi2,kfw,alpha)
-    unitst,factor = factor_for_time(time_given)
-    STRING += rf"   * It required {time_given*factor:.2f} {unitst} to reach xi = 0.999*xi_eq"+"\n\n"
-    # update global variable for string 
-    last_info = STRING
-    # plot data
-    plot_kinetics_N2O4(np.array(times),xis,xieq,T0,P0,V0,yA0,scenario)
-# --------------------------------------------- #
 def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
 
     # select good units for time (among secs, milisecs, microsecs and nanosecs)
@@ -544,5 +495,55 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     # fig.set_size_inches(9.0,6.6)
     plt.show()
     plt.close(fig)
+# --------------------------------------------- #
+def kinetics_N2O4(T0,P0,V0,yA0,scenario,arrhenius):
+    # --- global variable to update ---
+    global last_info
+    global ARRHENIUS_A
+    global ARRHENIUS_B
+    ARRHENIUS_A,ARRHENIUS_B = arrhenius
+    # which scenario
+    if   "PT" in scenario: scenario = "PT"
+    elif "VT" in scenario: scenario = "VT"
+    else: raise Exception
+    # Get data for this reaction
+    DGo,Kp_o,Kc_o,kfw,kbw,STRING = get_constants_N2O4(T0)
+    # Determine xieq, xi1 and xi2
+    (nA0,nB0) = xi_to_data_N2O4(0,T0,P0,V0,yA0,scenario)[0]
+    if scenario == "VT":
+       xieq = get_xieq_VT_N2O4(T0,V0,nA0,nB0)
+       Kc   = kfw/kbw
+       lamb = 4*(kbw/V0)
+       a0   = (nB0**2/4 - nA0*V0*Kc/4)
+       a1   = (nB0      +     V0*Kc/4)
+       xi1  = (-a1 + np.sqrt(a1**2-4*a0))/2
+       xi2  = (-a1 - np.sqrt(a1**2-4*a0))/2
+    if scenario == "PT":
+       xieq  = get_xieq_PT_N2O4(T0,P0,nA0,nB0)
+       alpha = kbw*P0/(R*T0)
+       beta  = kfw + 4*alpha
+       s     = np.sqrt(kfw/beta)
+       xi1   = (-nB0+(2*nA0+nB0)*s)/2
+       xi2   = (-nB0-(2*nA0+nB0)*s)/2
+    # Calculate from xi = 0 to xieq
+    xis    = np.linspace(0,REL_XI_EQ*xieq,NPOINTSXI)
+    if scenario == "VT": times = [xi2time_VT_N2O4(xi,xi1,xi2,kbw,V0   ) for xi in xis]
+    if scenario == "PT": times = [xi2time_PT_N2O4(xi,xi1,xi2,kfw,alpha) for xi in xis]
+    # String with information
+    STRING += rf"   * Initial conditions:"+"\n\n"
+    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,0   ,scenario)
+    STRING += rf"   * At equilibrium:"+"\n\n"
+    STRING += datatoinfo_N2O4(T0,P0,V0,yA0,xieq,scenario)
+    # calculate time for 99.9%
+    xi_given = xieq*0.999
+    if scenario == "VT": time_given = xi2time_VT_N2O4(xi_given,xi1,xi2,kbw,V0   )
+    if scenario == "PT": time_given = xi2time_PT_N2O4(xi_given,xi1,xi2,kfw,alpha)
+    unitst,factor = factor_for_time(time_given)
+    STRING += rf"   * It required {time_given*factor:.2f} {unitst} to reach xi = 0.999*xi_eq"+"\n\n"
+    # update global variable for string 
+    last_info = STRING
+    # plot data
+    plot_kinetics_N2O4(np.array(times),xis,xieq,T0,P0,V0,yA0,scenario)
+    print(last_info)
 # ============================================= #
 
