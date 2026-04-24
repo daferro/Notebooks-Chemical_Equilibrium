@@ -441,26 +441,26 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[0, 1].set_title('(b)')
 
     # -------------------------------------
-    # (c) P(or V) vs time
-    # -------------------------------------
-    if "PT" in scenario:
-        axs[0, 2].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
-        axs[0, 2].set_ylabel('$V$ (L)',fontsize=14)
-    if "VT" in scenario:
-        axs[0, 2].plot(times*factor,np.array(P)*1E-5,ls='-',color='k')
-        axs[0, 2].set_ylabel('$P$ (bar)',fontsize=FONTSIZE[2])
-    axs[0, 2].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[0, 2].set_title('(c)')
-
-    # -------------------------------------
-    # (d) Q vs time
+    # (c) Q vs time
     # -------------------------------------
     xx,yy=factor*times[1:], Qp[1:]
-    axs[1, 0].plot(xx,yy,ls='-',color='k',zorder=2)
-    axs[1, 0].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
-    axs[1, 0].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
-    axs[1, 0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[1, 0].set_title('(d)')
+    axs[0,2].plot(xx,yy,ls='-',color='k',zorder=2)
+    axs[0,2].axhline(y=dataeq[5],ls=":" ,color="k",zorder=1)
+    axs[0,2].set_ylabel('$Q_p^\\circ$',fontsize=FONTSIZE[2])
+    axs[0,2].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[0,2].set_title('(c)')
+
+    # -------------------------------------
+    # (d) P(or V) vs time
+    # -------------------------------------
+    if "PT" in scenario:
+        axs[1,0].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
+        axs[1,0].set_ylabel('$V$ (L)',fontsize=14)
+    if "VT" in scenario:
+        axs[1,0].plot(times*factor,np.array(P)*1E-5,ls='-',color='k')
+        axs[1,0].set_ylabel('$P$ (bar)',fontsize=FONTSIZE[2])
+    axs[1,0].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[1,0].set_title('(d)')
 
     # -------------------------------------
     # (e) dξ/dt vs time
