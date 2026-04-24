@@ -434,23 +434,23 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[0, 0].legend(frameon=False)
 
     # -------------------------------------
-    # (b) ξ vs time [0,1]
+    # (b) ξ vs time
     # -------------------------------------
     nA0,nB0 = xi_to_data_N2O4(0,T0,P0,V0,yA0,scenario)[0]
     xlim1   = -nB0/2
     xlim2   = +nA0
-    axs[0, 1].plot(times*factor,xis,ls='-',color='k')
-    axs[0, 1].axhline(y=xieq,ls=":",color="k",zorder=1)
+    axs[0,1].plot(times*factor,xis,ls='-',color='k')
+    axs[0,1].axhline(y=xieq,ls=":",color="k",zorder=1)
 
-    axs[0, 1].set_ylabel('$\\xi$ (mol)',fontsize=FONTSIZE[2])
+    axs[0,1].set_ylabel('$\\xi$ (mol)',fontsize=FONTSIZE[2])
     # axs[0, 1].set_ylim(xlim1,xlim2)
-    axs[0, 1].yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+    axs[0,1].yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
 
-    axs[0, 1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[0, 1].set_title('(b)')
+    axs[0,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[0,1].set_title('(b)')
 
     # -------------------------------------
-    # (c) Q vs time [0,2]
+    # (c) Q vs time
     # -------------------------------------
     xx,yy=factor*times[1:], Qp[1:]
     axs[2,0].plot(xx,yy,ls='-',color='k',zorder=2)
@@ -460,7 +460,7 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[2,0].set_title('(c)')
 
     # -------------------------------------
-    # (d) P(or V) vs time [1,0]
+    # (d) P(or V) vs time
     # -------------------------------------
     if "PT" in scenario:
         axs[1,0].plot(times*factor,np.array(V)*1E3 ,ls='-',color='k')
@@ -472,19 +472,19 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     axs[1,0].set_title('(d)')
 
     # -------------------------------------
-    # (e) dξ/dt vs time [1,1]
+    # (e) dξ/dt vs time
     # -------------------------------------
     Kpo,Kco,kfw = get_constants_N2O4(T0)[1:4]
     dxidt_ana       = kfw*np.array(nA)*(1-Qp/Kpo)
-    axs[1, 1].plot(times*factor,dxidt_ana/factor,ls='-',color='k')
+    axs[1,1].plot(times*factor,dxidt_ana/factor,ls='-',color='k')
     # dxidt_num       = np.gradient(xis,times)
     # axs[1, 1].plot(times*factor,dxidt_num/factor,'rx')
-    axs[1, 1].set_ylabel(rf'd$\xi$/d$t$ (mol/{unitst:s})',fontsize=FONTSIZE[2])
-    axs[1, 1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
-    axs[1, 1].set_title('(e)')
+    axs[1,1].set_ylabel(rf'd$\xi$/d$t$ (mol/{unitst:s})',fontsize=FONTSIZE[2])
+    axs[1,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
+    axs[1,1].set_title('(e)')
 
     # -------------------------------------
-    # (f) G or A vs time [1,2]
+    # (f) G or A vs time
     # -------------------------------------
     yy = [Ei/(R*T0) for Ei in AG]
     axs[2,1].plot(times*factor,yy,color='k')
