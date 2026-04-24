@@ -439,9 +439,9 @@ def plot_kinetics_N2O4(times,xis,xieq,T0,P0,V0,yA0,scenario):
     # (b) dξ/dt vs time
     # -------------------------------------
     Kpo,Kco,kfw = get_constants_N2O4(T0)[1:4]
-    dxidt_ana       = kfw*np.array(nA)*(1-Qp/Kpo)
+    dxidt_ana   = kfw*np.array(nA)*(1-Qp/Kpo)
     axs[0,1].plot(times*factor,dxidt_ana/factor,ls='-',color='k')
-    # dxidt_num       = np.gradient(xis,times)
+    # dxidt_num   = np.gradient(xis,times)
     # axs[1, 1].plot(times*factor,dxidt_num/factor,'rx')
     axs[0,1].set_ylabel(rf'd$\xi$/d$t$ (mol/{unitst:s})',fontsize=FONTSIZE[2])
     axs[0,1].set_xlabel(rf'Time ({unitst:s})',fontsize=FONTSIZE[2])
