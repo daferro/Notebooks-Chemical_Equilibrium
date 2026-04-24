@@ -288,7 +288,7 @@ def xi_to_data_N2O4(xi,T0,P0,V0,yA0,scenario):
     pA = yA*P
     pB = yB*P
     # quotient of reaction
-    if pA == 0: Qp = np-inf
+    if pA == 0: Qp = np.inf
     else      : Qp = (pB/P_o)**2 / (pA/P_o))
     #Qp = np.where(pA == 0,np.inf,(pB/P_o)**2 / (pA/P_o))
     # energy of interest
