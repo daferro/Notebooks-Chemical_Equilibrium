@@ -261,10 +261,10 @@ def get_constants_N2O4(T):
     # String with data
     string  = rf"   * Constants for the reaction at {T:.2f} K" + "\n"
     string += "\n"
-    string += rf"     equilibrium constant   Kp^o = {Kp_o:.3E}" + "\n"
-    string += rf"     equilibrium constant   Kc^o = {Kc_o:.3E}" + "\n"
-    string += rf"     forward  rate constant kfw  = {kfw:.3E} 1/s" + "\n"
-    string += rf"     backward rate constant kbw  = {kbw:.3E} m^3 / mol / s" + "\n"
+    string += rf"     - equilibrium constant   Kp^o = {Kp_o:.3E}" + "\n"
+    string += rf"     - equilibrium constant   Kc^o = {Kc_o:.3E}" + "\n"
+    string += rf"     - forward  rate constant kfw  = {kfw:.3E} 1/s" + "\n"
+    string += rf"     - backward rate constant kbw  = {kbw:.3E} m^3 / mol / s" + "\n"
     string += "\n"
     # return data
     return DGo,Kp_o,Kc_o,kfw,kbw,string
@@ -363,7 +363,7 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     # calculate more magnitudes
     (nA,nB),(pA,pB),(yA,yB),(cA,cB),(n,P,V),Qp,E = xi_to_data_N2O4(xi,T0,p0,V0,yA0,scenario)
     # string with information
-    string  = rf"       (P , V , T) = ({P*1E-5:6.2f} bar , {V*1E3:6.2f} L , {T0:6.2f} K)"+"\n"
+    string  = rf"       (P,V,T)     = ({P*1E-5:6.2f} bar , {V*1E3:6.2f} L , {T0:6.2f} K)"+"\n"
     string += rf"       num. moles  = {n:6.3f} mol"+"\n"
     string += rf"       extent (xi) = {xi:6.3f} mol"+"\n"
     if "VT" in scenario: string += rf"       A(xi)-A(0)  = {E/(R*T0):8.2E}*(RT) mol"+"\n"
@@ -371,14 +371,14 @@ def datatoinfo_N2O4(T0,p0,V0,yA0,xi,scenario):
     string += "\n"
 
     string += rf"       data for N2O4"+"\n"
-    string += rf"         - number of moles  = {nA:6.3f} mol"+"\n"
+   #string += rf"         - number of moles  = {nA:6.3f} mol"+"\n"
     string += rf"         - mole fraction    = {yA:6.3f} mol"+"\n"
     string += rf"         - partial pressure = {pA*1E-5:6.3f} bar"+"\n"
     string += rf"         - concentration    = {cA/1000:8.2E} M"+"\n"
     string += "\n"
 
     string += rf"       data for NO2"+"\n"
-    string += rf"         - number of moles  = {nB:6.3f} mol"+"\n"
+   #string += rf"         - number of moles  = {nB:6.3f} mol"+"\n"
     string += rf"         - mole fraction    = {yB:6.3f} mol"+"\n"
     string += rf"         - partial pressure = {pB*1E-5:6.3f} bar"+"\n"
     string += rf"         - concentration    = {cB/1000:8.2E} M"+"\n"
