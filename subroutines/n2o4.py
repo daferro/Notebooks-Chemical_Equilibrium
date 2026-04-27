@@ -158,7 +158,7 @@ def plot_intercept_N2O4(T,P,yB):
     ax2.set_xlim( 0 , 1 )
     ax2.set_ylim(ylim1,ylim2)
     ax2.set_xlabel(r"$y_{\rm NO_2}$",fontsize=FONTSIZE[2])
-    ax2.set_ylabel(r"$[G_{\rm m}(y_{\rm NO_2})- G_{\rm m}(0)] \cdot (RT)^{-1}$",fontsize=FONTSIZE[2])
+    ax2.set_ylabel(r"$[G_{\rm m}(y_{\rm NO_2})- G(0)/n] \cdot (RT)^{-1}$",fontsize=FONTSIZE[2])
     ax2.legend(loc="upper center",fontsize=FONTSIZE[0])
     # --- update global variable: last_fig ---
     global last_fig

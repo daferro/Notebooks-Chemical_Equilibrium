@@ -271,7 +271,7 @@ def get_DDGmix(xi, T, P, n_0, nus):
     return DDGmix
 # --------------------------------------------- #
 def get_G_PT(xis,P,T,n_0,nus,refdata):
-    '''Gibbs free energy for a given T,p'''
+    '''Gibbs free energy for a given T,p; actually it is G(xi)-G(0)'''
     Gast   = get_Gast(T,P,nus,refdata)
     DDGmix = get_DDGmix(xis,T,P,n_0,nus)
     DGtot  = Gast * xis + DDGmix
