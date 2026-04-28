@@ -979,11 +979,11 @@ def plot_DGo_T_statmech(T,DGo_T,DGo_model,DCP,TREF,DGo_ref,key):
 def plot_gibbshelmholtz(T,DGo_T,refdata):
     # --- DH^o at each temperature ---
     DHo_T = get_DHo(T,refdata)
-    yy    = DHo_T / (R * T**2)
+    yy    = -DHo_T / (R * T**2)
 
     # Plot results
     fig, ax = plt.subplots()
-    ax.plot(T,yy,'k-',zorder=1,label=r'$(a) \;\; f=\Delta_r H^{\circ}/T^2$ \quad\quad\quad\quad [analytic]')
+    ax.plot(T,yy,'k-',zorder=1,label=r'$(a) \;\; f=-\Delta_r H^{\circ}/T^2$ \quad\quad\quad\quad [analytic]')
 
     # Format plot
     ax.tick_params(axis='x', labelsize=FONTSIZE[4])
@@ -993,10 +993,10 @@ def plot_gibbshelmholtz(T,DGo_T,refdata):
     ax.set_ylabel(r'$f/R \;\; (\mathrm{K}^{-1})$', fontsize=FONTSIZE[5])
 
     # --- Calculate numerical derivative ---
-    numslope = np.gradient(-DGo_T / (R*T) , T)
+    numslope = np.gradient(DGo_T / (R*T) , T)
 
     # --- Add data to plot (removing first and last points, due to numerical error) ---
-    ax.plot(T[1:-1],numslope[1:-1],'xr',zorder=2, markeredgewidth=2.5,label=r'$(b)  \;\; f = -d/dT(\Delta_r G^{\circ}/T)$ \;\, [numeric]')
+    ax.plot(T[1:-1],numslope[1:-1],'xr',zorder=2, markeredgewidth=2.5,label=r'$(b)  \;\; f = d/dT(\Delta_r G^{\circ}/T)$ \;\, [numeric]')
 
     ax.legend(loc="best",fontsize=FONTSIZE[3])
 
