@@ -983,7 +983,7 @@ def plot_gibbshelmholtz(T,DGo_T,refdata):
 
     # Plot results
     fig, ax = plt.subplots()
-    ax.plot(T,yy,'k-',zorder=1,label=r'$(a) \;\; f=-\Delta_r H^{\circ}/T^2$ \quad\quad\quad\quad [analytic]')
+    ax.plot(T,yy,'k-',zorder=1,label=r'$(a) \;\; f=-\Delta_r H^{\circ}/T^2$ \quad\quad\quad [analytic]')
 
     # Format plot
     ax.tick_params(axis='x', labelsize=FONTSIZE[4])
