@@ -31,7 +31,7 @@ last_fig  = None
 # ------------------------------------------------
 FONTSIZE  = [11,12,14,15,16,20]
 # ------------------------------------------------
-NPOINTST  = 36    # number of Temperature  points
+NPOINTST  = 41    # number of Temperature  points
 NPOINTSXI = 251   # number of xi points (thermo & kinetics)
 REL_XI_EQ = 0.999 # plot until REL_XI_EQ * xieq
 # ============================================== #
