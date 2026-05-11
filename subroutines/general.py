@@ -50,7 +50,7 @@ Firstly, introduce your reaction, using the following format:
       A + 2 B -> 3 C + 2 D
 
 Make sure to include blank spaces between the stoichiometric coefficients and the chemical species.
-For example, for the reaction we studied above, you should enter:
+For example, for the reaction studied in Notebook 1, you should enter:
 
      N2O4 -> 2 NO2
 ===================
