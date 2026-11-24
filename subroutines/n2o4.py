@@ -21,9 +21,9 @@ last_info   = None
 last_fig    = None
 ARRHENIUS_A = None
 ARRHENIUS_B = None
-TFACTORS    = [("years"  ,1/360/24/365)]
-TFACTORS   += [("days"   ,1/360/24    )]
-TFACTORS   += [("hours"  ,1/360       )]
+TFACTORS    = [("years"  ,1/3600/24/365)]
+TFACTORS   += [("days"   ,1/3600/24    )]
+TFACTORS   += [("hours"  ,1/3600       )]
 TFACTORS   += [("min"    ,1/60        )]
 TFACTORS   += [("s"      ,1           )]
 TFACTORS   += [("ms"     ,1E3         )]
@@ -144,16 +144,24 @@ def plot_intercept_N2O4(T,P,yB):
     ax1.set_xlabel(r"$y_{\rm NO_2}$",fontsize=FONTSIZE[2])
     ax1.set_ylabel(r"$[G(y_{\rm NO_2})-G(0)]\cdot (RT)^{-1} \;\; \mathrm{[mol]}$",fontsize=FONTSIZE[2])
     # -- right plot --
-    xx2 = [ZERO4,1-ZERO4]
+    xx2 = [0.0,1.0]
     yy2 = [m*xx_i + b for xx_i in xx2]
-    ylim1 = min(lGm)
-    ylim2 = max(lGm)
+    # y-limits: fixed for a given (T,P) and wide enough to show both intercepts
+    # of the tangent at equilibrium, i.e. the points where it crosses the
+    # lines y(NO2) = 0 and y(NO2) = 1
+    m_eq,b_eq = intercept_getline_N2O4(T,P,yB_eq)[0:2]
+    ylim1 = min(min(lGm),b_eq,m_eq+b_eq)
+    ylim2 = max(max(lGm),b_eq,m_eq+b_eq)
     delta = ylim2-ylim1
-    ylim1 = ylim1 - delta*0.1
-    ylim2 = ylim2 + delta*0.1
+    ylim1 = ylim1 - delta*0.15
+    ylim2 = ylim2 + delta*0.15
     ax2.plot(list_yB,lGm,'k-')
-    ax2.plot(xx1,yy1,'ro')
     ax2.plot(xx2,yy2,'r--',label=rf"${m:+.5f} \cdot y_{{\rm NO_2}} {b:+.5f}$")
+    ax2.plot(xx1,yy1,'ro')
+    # intercepts of the tangent: chemical potentials (relative to the reference)
+    for xx_i,yy_i in zip(xx2,yy2):
+        if ylim1 <= yy_i <= ylim2:
+           ax2.plot(xx_i,yy_i,ls='none',marker='o',mfc='w',mec='r',mew=1.5,ms=8,clip_on=False,zorder=5)
     for ii in ["x","y"]: ax2.tick_params(axis=ii,labelsize=FONTSIZE[1])
     ax2.set_xlim( 0 , 1 )
     ax2.set_ylim(ylim1,ylim2)
@@ -166,7 +174,16 @@ def plot_intercept_N2O4(T,P,yB):
     # --- Show and close figure ---
     plt.show()
     plt.close()
-    print(rf"Equilibrium at y(NO2) = {yB_eq:.7f}")
+    # --- Information on the tangent (intercept method) ---
+    print(rf"Tangent to Gm at y(NO2) = {yB:.6f}   [Gm is referred to G(0); values in units of RT]")
+    print(rf"   * slope                               = {m:+.5f}")
+    print(rf"   * intercept at y(NO2) = 0 [ ~ mu(N2O4)] = {b:+.5f}")
+    print(rf"   * intercept at y(NO2) = 1 [ ~ mu(NO2) ] = {m+b:+.5f}")
+    print(rf"   * 2*mu(NO2) - mu(N2O4)  (= -affinity)  = {2*(m+b)-b:+.5f}")
+    print("")
+    print(rf"Equilibrium requires mu(N2O4) = 2*mu(NO2): the intercept at y(NO2) = 1 must be")
+    print(rf"one-half of the intercept at y(NO2) = 0 (zero affinity).")
+    print(rf"This happens at y(NO2) = {yB_eq:.7f}")
 # --------------------------------------------- #
 def plot_3DeqPT_N2O4(T,P):
 
@@ -216,6 +233,67 @@ def plot_3DeqPT_N2O4(T,P):
 # ============================================= #
 
 # ============================================= #
+# ---- Self-checks of the work done by hand ---- #
+# ============================================= #
+def selfcheck_thermo298():
+    """Exercise 1: reaction magnitudes at 298 K obtained by hand from tabulated data."""
+    refdata = load_n2o4_2no2()[0]
+    DHo,DSo,DCPo,TREF = refdata
+    DGo = general.get_DGo(TREF,refdata)
+    Kp  = np.exp(-DGo/R/TREF)
+    print("Enter the values you obtained BY HAND from the tabulated data (298 K).")
+    print("The notebook only tells you whether they agree with its own values.")
+    print("")
+    res  = []
+    res += [general.check_value("Delta_r H^o"    ,DHo/1000,"kJ/mol"   ,atol=0.06)]
+    res += [general.check_value("Delta_r S^o"    ,DSo     ,"J/(mol K)",atol=0.15)]
+    # 4.80 kJ/mol from Delta_r H^o - T*Delta_r S^o; 4.73 kJ/mol from tabulated Delta_f G^o
+    res += [general.check_value("Delta_r G^o"    ,DGo/1000,"kJ/mol"   ,atol=0.09,
+            hint="Delta_r G^o = Delta_r H^o - T*Delta_r S^o; mind kJ and J.")]
+    res += [general.check_value("K_p^o"          ,Kp      ,""         ,rtol=0.04,
+            hint="K_p^o = exp(-Delta_r G^o/RT), with Delta_r G^o in J/mol.")]
+    res += [general.check_value("Delta_r C_p^o/R",DCPo/R  ,""         ,atol=0.01,
+            hint="sum of nu_i*C_p,m,i with the stoichiometric coefficients, divided by R.")]
+    general.summary_checks(res)
+# --------------------------------------------- #
+def selfcheck_xieq():
+    """Exercise 3: extent of reaction at equilibrium (1 mol N2O4, 298 K, 1 bar)."""
+    xieq = get_xieq_PT_N2O4(298.,1E5,1.0,0.0)
+    print("Enter the equilibrium extent of reaction you obtained BY HAND")
+    print("(1.00 mol of N2O4 initially, 298 K, constant pressure of 1 bar).")
+    print("")
+    res = [general.check_value("xi_eq",xieq,"mol",atol=0.003,
+           hint="write K_p^o in terms of xi_eq (mole fractions times p/p^o) and solve for xi_eq.")]
+    general.summary_checks(res)
+# --------------------------------------------- #
+def selfcheck_cp_limits():
+    """Exercise 8: Delta_r C_p^o from equipartition in the two limiting cases."""
+    print("Enter the values of Delta_r C_p^o/R you obtained BY HAND with the equipartition expression.")
+    print("")
+    res  = []
+    res += [general.check_value("all rotations and vibrations fully active: Delta_r C_p^o/R",-2.0,"",atol=0.01,
+            hint="a nonlinear molecule with N atoms has 3 rotations and 3N-6 vibrations.")]
+    res += [general.check_value("vibrations neglected                     : Delta_r C_p^o/R",+4.0,"",atol=0.01,
+            hint="without vibrations every nonlinear molecule has C_p,m = 4R.")]
+    general.summary_checks(res)
+# --------------------------------------------- #
+def selfcheck_rate_constants(arrhenius,T=298.):
+    """Exercise 9: forward and backward rate coefficients (with units)."""
+    global ARRHENIUS_A, ARRHENIUS_B
+    ARRHENIUS_A,ARRHENIUS_B = arrhenius
+    DGo,Kp_o,Kc_o,kfw,kbw,string = get_constants_N2O4(T)
+    print(rf"Enter the rate coefficients you obtained BY HAND at {T:.0f} K, in the units indicated.")
+    print("")
+    res  = []
+    res += [general.check_value("k_fw",kfw     ,"1/s"      ,rtol=0.03,
+            hint="k_fw = A*exp(-B/T).")]
+    res += [general.check_value("k_bw",kbw*1000,"L/(mol s)",rtol=0.05,
+            hint="k_bw = k_fw/K_c, with K_c = K_c^o * c^o and K_c^o = K_p^o * p^o/(c^o*R*T).")]
+    general.summary_checks(res)
+# ============================================= #
+
+
+# ============================================= #
 # ---- Specific for N2O4 <-> 2NO2 (PART 2) ---- #
 # ============================================= #
 def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
@@ -235,6 +313,159 @@ def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
     general.pyscf_printdata(dftdata)
     print("")
     return dftdata
+# ============================================= #
+
+
+# ============================================= #
+# ---- Reference molecular data (PART 2)   ---- #
+# ============================================= #
+# Molecular data obtained beforehand with the routines of this notebook
+# (general.optimize_and_freqs; PySCF 2.11.0; 6-31G* basis set; DFT grid level 5).
+# They allow the statistical-mechanical part to be carried out without running
+# the electronic-structure calculations. Units: mass (amu), rotational constants (Hz),
+# wavenumbers (1/m), E0 and ZPE (hartree). A fresh calculation may differ slightly
+# (about 0.1 kJ/mol in Delta_r G^o), depending on the grid level and software version.
+REFERENCE_DFT_INFO = "PySCF 2.11.0, 6-31G* basis set, DFT grid level 5"
+REFERENCE_DFT = {}
+REFERENCE_DFT[("b3lyp-d4","6-31g*")] = {
+    "N2O4": {
+        "natoms"  : 6,
+        "mass"    : 92.010000,
+        "rotcons" : [6.477259E+09, 3.645212E+09, 2.332532E+09],
+        "islinear": False,
+        "freqs"   : [9728.5, 22803.4, 30055.3, 43705.8, 50100.0, 68944.8, 75724.1, 84040.7, 133438.6, 146399.7, 183708.6, 186302.1],
+        "ZPE"     : 0.02357793,
+        "unpaired": 0,
+        "charge"  : 0,
+        "E0"      : -410.16703541,
+        "xyz"     : [("O",-1.349000,1.104172,0.000000), ("O",1.349000,1.104172,0.000000), ("O",-1.349000,-1.104172,0.000000), ("O",1.349000,-1.104172,0.000000), ("N",-0.889838,0.000000,0.000000), ("N",0.889838,-0.000000,0.000000)],
+    },
+    "NO2": {
+        "natoms"  : 3,
+        "mass"    : 46.005000,
+        "rotcons" : [2.345876E+11, 1.289036E+10, 1.221894E+10],
+        "islinear": False,
+        "freqs"   : [74959.5, 140638.1, 172660.0],
+        "ZPE"     : 0.00884516,
+        "unpaired": 1,
+        "charge"  : 0,
+        "E0"      : -205.06973401,
+        "xyz"     : [("N",-0.000000,-0.000957,-0.000000), ("O",1.106916,0.469289,0.000000), ("O",-1.106916,0.469289,-0.000000)],
+    },
+}
+REFERENCE_DFT[("o3lyp-d4","6-31g*")] = {
+    "N2O4": {
+        "natoms"  : 6,
+        "mass"    : 92.010000,
+        "rotcons" : [6.504970E+09, 3.566799E+09, 2.303659E+09],
+        "islinear": False,
+        "freqs"   : [9322.2, 21657.8, 28129.5, 43104.5, 49001.9, 68325.5, 75718.3, 84106.9, 134546.3, 148195.6, 186841.6, 189102.9],
+        "ZPE"     : 0.02364858,
+        "unpaired": 0,
+        "charge"  : 0,
+        "E0"      : -410.06535386,
+        "xyz"     : [("O",-1.362638,1.101817,0.000000), ("O",1.362638,1.101817,0.000000), ("O",-1.362638,-1.101817,0.000000), ("O",1.362638,-1.101817,0.000000), ("N",-0.903399,0.000000,0.000000), ("N",0.903399,-0.000000,0.000000)],
+    },
+    "NO2": {
+        "natoms"  : 3,
+        "mass"    : 46.005000,
+        "rotcons" : [2.357613E+11, 1.292175E+10, 1.225032E+10],
+        "islinear": False,
+        "freqs"   : [75362.0, 141528.5, 175828.6],
+        "ZPE"     : 0.00894680,
+        "unpaired": 1,
+        "charge"  : 0,
+        "E0"      : -205.01942708,
+        "xyz"     : [("N",-0.000000,-0.000093,-0.000000), ("O",1.105571,0.468980,0.000000), ("O",-1.105571,0.468980,-0.000000)],
+    },
+}
+REFERENCE_DFT[("pbe0-d4","6-31g*")] = {
+    "N2O4": {
+        "natoms"  : 6,
+        "mass"    : 92.010000,
+        "rotcons" : [6.563188E+09, 3.809745E+09, 2.410511E+09],
+        "islinear": False,
+        "freqs"   : [9880.8, 25275.1, 32708.3, 46475.4, 53223.9, 73274.6, 77995.2, 86001.8, 138629.8, 150660.3, 191477.3, 194573.6],
+        "ZPE"     : 0.02460822,
+        "unpaired": 0,
+        "charge"  : 0,
+        "E0"      : -409.75002583,
+        "xyz"     : [("O",-1.320985,1.096920,0.000000), ("O",1.320985,1.096920,0.000000), ("O",-1.320985,-1.096920,0.000000), ("O",1.320985,-1.096920,0.000000), ("N",-0.865419,0.000000,0.000000), ("N",0.865419,-0.000000,0.000000)],
+    },
+    "NO2": {
+        "natoms"  : 3,
+        "mass"    : 46.005000,
+        "rotcons" : [2.423270E+11, 1.305672E+10, 1.238919E+10],
+        "islinear": False,
+        "freqs"   : [76657.3, 145949.1, 181593.5],
+        "ZPE"     : 0.00920835,
+        "unpaired": 1,
+        "charge"  : 0,
+        "E0"      : -204.86015716,
+        "xyz"     : [("N",0.000000,0.004115,0.000000), ("O",1.099841,0.466790,0.000000), ("O",-1.099841,0.466790,0.000000)],
+    },
+}
+# --------------------------------------------- #
+def load_reference_dft(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
+    """Alternative to optimize_and_freqs_n2o4: returns the molecular data of a
+    previous calculation (REFERENCE_DFT) instead of running PySCF.
+
+    The charge and the number of unpaired electrons entered by the student must
+    be the right ones, and the rotational symmetry number is left unassigned
+    (sigma = 1): it has to be set in the following section of the notebook."""
+    print(rf" * Molecule: {molecule:s}")
+    if key not in REFERENCE_DFT or molecule not in REFERENCE_DFT[key]:
+       print(rf"     - no reference data for {molecule:s} at this level; run the calculation instead")
+       return None
+    ref = REFERENCE_DFT[key][molecule]
+    # the student still has to know the electronic state of each species
+    if int(CHARGES[molecule]) != ref["charge"] or int(UNPAIREDS[molecule]) != ref["unpaired"]:
+       print(rf"     - the charge and/or the number of unpaired electrons you entered for {molecule:s}")
+       print(rf"       do not correspond to its electronic ground state. Think about its Lewis")
+       print(rf"       structure, run again the cell where they are defined and come back.")
+       print("")
+       return None
+    print(rf"     - reference data loaded ({REFERENCE_DFT_INFO:s}); no calculation was run")
+    # optimized geometry: write it, show it and print the geometric parameters
+    xyz_opt = general.files_of_interest(molecule,key[0],key[1],DFTGRID)[1]
+    symbols = [atom[0] for atom in ref["xyz"]]
+    coords  = np.array([atom[1:] for atom in ref["xyz"]])
+    try:
+       general.data_2_xyz(symbols,coords,xyz_opt)
+       try:
+          view = general.create_visualization_xyz(xyz_opt)
+          general.show_indented(view, indent_px=50)
+       except Exception: pass
+       print(general.geometric_info_xyz(xyz_opt,GEOMINFO[molecule]))
+    except Exception: pass
+    # data for the partition functions
+    dftdata = {k:ref[k] for k in ("natoms","mass","islinear","ZPE","unpaired","E0")}
+    dftdata["rotcons" ] = list(ref["rotcons"])
+    dftdata["freqs"   ] = list(ref["freqs"])
+    dftdata["rotsigma"] = 1   # not assigned: to be set by the student
+    general.pyscf_printdata(dftdata)
+    print("")
+    return dftdata
+# --------------------------------------------- #
+def export_reference_dft(DFTDATA,LEVELS):
+    """Prints the molecular data stored in DFTDATA in the format of REFERENCE_DFT,
+    so that instructors can replace the reference data by those of their own run."""
+    for key in LEVELS:
+        print(rf'REFERENCE_DFT[("{key[0]:s}","{key[1]:s}")] = {{')
+        for molecule in DFTDATA.keys():
+            if key not in DFTDATA[molecule]: continue
+            d = DFTDATA[molecule][key]
+            print(rf'    "{molecule:s}": {{')
+            print(rf'        "natoms"  : {d["natoms"]:d},')
+            print(rf'        "mass"    : {d["mass"]:.6f},')
+            print(rf'        "rotcons" : [' + ", ".join(["None" if x is None else "%.6E"%x for x in d["rotcons"]]) + "],")
+            print(rf'        "islinear": {str(d["islinear"]):s},')
+            print(rf'        "freqs"   : [' + ", ".join(["%.1f"%x for x in d["freqs"]]) + "],")
+            print(rf'        "ZPE"     : {d["ZPE"]:.8f},')
+            print(rf'        "unpaired": {d["unpaired"]:d},')
+            print(rf'        "E0"      : {d["E0"]:.8f},')
+            print("    },")
+        print("}")
 # ============================================= #
 
 

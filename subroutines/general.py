@@ -72,6 +72,53 @@ Information:
 
 
 # ============================================= #
+#   Self-check of calculations done by hand     #
+# --------------------------------------------- #
+def check_value(label,correct,units="",rtol=0.02,atol=0.0,ntries=3,hint=""):
+    """Formative self-check of a result obtained BY HAND.
+
+    The student types the value; the notebook only reports whether it agrees
+    with its own result (within a tolerance). The correct value is never shown.
+    Returns True/False."""
+    sunits = rf" [{units}]" if units else ""
+    for itry in range(ntries):
+        answer = input(rf"   * {label}{sunits} = ").strip().replace(",",".")
+        try:
+            value = float(answer)
+        except ValueError:
+            print("       please enter a number (for example 0.123 or 1.23E-1)")
+            continue
+        tol = max(atol,rtol*abs(correct))
+        if abs(value-correct) <= tol:
+            print("       OK: your result agrees with the notebook.")
+            return True
+        message = "       Not yet. "
+        if   value != 0 and abs(value+correct) <= tol:
+             message += "The magnitude is right: check the sign."
+        elif value != 0 and correct != 0 and value*correct > 0:
+             power = np.log10(value/correct)
+             if abs(power-round(power)) < 0.03 and round(power) != 0:
+                message += "The digits look right: check the units (powers of ten)."
+             else:
+                message += "Revise the calculation."
+        else:
+             message += "Revise the calculation."
+        if hint and itry >= 1: message += " Hint: " + hint
+        print(message)
+    print("       (You can continue and run this cell again later, or ask your instructor.)")
+    return False
+# --------------------------------------------- #
+def summary_checks(results):
+    nok = sum([1 for r in results if r])
+    print("")
+    print(rf"   ==> {nok:d} of {len(results):d} results agree with the notebook.")
+    if nok < len(results):
+       print("       Find the origin of each discrepancy before moving on: it is part of the exercise.")
+    print("")
+# ============================================= #
+
+
+# ============================================= #
 #          Interaction with student(s)          #
 # --------------------------------------------- #
 def ask_for_float(question,ntries=3):
@@ -1011,6 +1058,45 @@ def plot_gibbshelmholtz(T,DGo_T,refdata):
     display(fig)
     plt.close()
 # --------------------------------------------- #
+def get_affinity(n_0,nus,xis,T,refdata,P=None,V=None):
+    """Chemical affinity (in units of RT) along the extent of reaction.
+
+    affinity/(RT) = -(1/RT)*(dG/dxi)_{T,p} = -(1/RT)*(dA/dxi)_{T,V} = ln(Kp/Qp)
+
+    It is positive when the forward reaction is spontaneous (Qp < Kp),
+    zero at equilibrium (Qp = Kp) and negative when the reverse reaction
+    is spontaneous (Qp > Kp). Give P for constant-(T,p) or V for constant-(T,V).
+    """
+    lnKp = -get_DGo(T,refdata)/(R*T)
+    aff  = np.full(len(xis),np.nan)
+    for i,xi in enumerate(xis):
+        if P is not None: Qp = get_Qp_PT(n_0,nus,xi,P)
+        else            : Qp = get_Qp_VT(n_0,nus,xi,V,T)
+        if np.isfinite(Qp) and Qp > 0.0: aff[i] = lnKp - np.log(Qp)
+    return aff
+# --------------------------------------------- #
+def plot_affinity(ax,xis,aff,xi_eq):
+    """Right-hand panel of plot_DG_PT / plot_DA_VT: the chemical driving force."""
+    ax.axhline(0.0,color='0.4',lw=0.8)
+    ax.fill_between(xis,0,aff,where=(aff>0),color='tab:green',alpha=0.15,lw=0)
+    ax.fill_between(xis,0,aff,where=(aff<0),color='tab:red'  ,alpha=0.15,lw=0)
+    ax.plot(xis,aff,color='k',ls='-')
+    ax.plot(xi_eq,0.0,'ko')
+    # limits: avoid the logarithmic divergences at the ends of the xi range
+    finite = aff[np.isfinite(aff)]
+    if len(finite) > 0:
+       lim = min(max(abs(np.percentile(finite,3)),abs(np.percentile(finite,97)),1.0),8.0)
+       ax.set_ylim(-lim,lim)
+       ax.text(0.03,0.93,r"forward reaction spontaneous",transform=ax.transAxes,
+               fontsize=FONTSIZE[0],color='tab:green',va='top',ha='left')
+       ax.text(0.97,0.07,r"reverse reaction spontaneous",transform=ax.transAxes,
+               fontsize=FONTSIZE[0],color='tab:red',va='bottom',ha='right')
+    ax.tick_params(axis='both',labelsize=FONTSIZE[1])
+    ax.set_xlabel(r'$\xi \;\; \mathrm{[mol]}$', fontsize=FONTSIZE[2])
+    ax.set_ylabel(r'$\mathcal{A}/(RT) = \ln (K_p^\circ/Q_p^\circ)$', fontsize=FONTSIZE[2])
+    ax.set_title(r'chemical affinity (driving force)')
+    ax.grid(True, alpha=0.3)
+# --------------------------------------------- #
 def plot_DG_PT(T,P, fixed_args):
 
     molecules,nus,n_0,xis,refdata = fixed_args
@@ -1052,8 +1138,10 @@ def plot_DG_PT(T,P, fixed_args):
     # (c) directly from xi_eq (specific case A --> 2B)
     Ky_v3 = 4*xi_eq * xi_eq / (1-xi_eq*xi_eq)
 
-    # --- Plot data ---
-    fig = plt.figure(figsize=(5.50,3.67))
+    # --- Plot data (left: Gibbs energy; right: chemical affinity) ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.0,3.67))
+    plot_affinity(ax2,xis,get_affinity(n_0,nus,xis,T,refdata,P=P),xi_eq)
+    plt.sca(ax1)
     plt.plot(xis, DGlin/(R*T), color='b',ls="--",label=r"$f = \xi \cdot \Delta_{r} G^{\ast}$")
     plt.plot(xis,DDGmix/(R*T), color='r',ls=":" ,label=r"$f = \Delta_{\rm mix}G(\xi) - \Delta_{\rm mix}G(0)$")
     plt.plot(xis, DGtot/(R*T), color='k',ls="-" ,label=r"$f = G(\xi) - G(0)$")
@@ -1075,8 +1163,8 @@ def plot_DG_PT(T,P, fixed_args):
     ax.xaxis.set_minor_formatter(mticker.NullFormatter())
 
     plt.grid(True, alpha=0.3)
-    plt.tight_layout()
     plt.legend(loc="best", fontsize=FONTSIZE[0])
+    plt.tight_layout()
 
     # --- update global variable: last_fig ---
     global last_fig
@@ -1092,6 +1180,9 @@ def plot_DG_PT(T,P, fixed_args):
     # print(fr"Value for Delta_r{{G}}^o({T:.2f} K) = {DGo/1000:.2f} kJ/mol")
     # print(fr"Value for Delta_r{{G}}^*({T:.2f} K) = {Gast/1000:.2f} kJ/mol")
     print_info_eq("G",PVT_0,PVT_eq,molecules,xi_eq,n_eq,y_eq,p_eq,P,Kp_v1,Kp_v2,Ky_v1,Ky_v2)
+    print(fr"   The slope of G(xi) is minus the chemical affinity: (dG/dxi)_T,p = RT ln(Qp/Kp) = -affinity.")
+    print(fr"   It vanishes only at xi_eq; Delta_r{{G}}^o = {DGo/1000:+.2f} kJ/mol fixes Kp, not the direction of reaction.")
+    print("")
 # --------------------------------------------- #
 def plot_DA_VT(T,V, fixed_args):
 
@@ -1127,8 +1218,10 @@ def plot_DA_VT(T,V, fixed_args):
     DGo          = get_DGo(T,refdata)
     Kp_v2, Ky_v2 = np.exp(-DGo /(R*T)), None
 
-    # --- Plot data ---
-    plt.figure(figsize=(5.50,3.67))
+    # --- Plot data (left: Helmholtz energy; right: chemical affinity) ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.0,3.67))
+    plot_affinity(ax2,xis,get_affinity(n_0,nus,xis,T,refdata,V=V),xi_eq)
+    plt.sca(ax1)
 
     plt.plot(xis,term_lineal/(R*T), color='b',ls="--",label=r"$f = \xi \cdot \Delta_{r} G^{o}$")
     plt.plot(xis,term_nolin /(R*T), color='r',ls=":",label=r"$f = V \sum_i \left[ p_i \ln\frac{p_i}{e p^\circ} - p_i(0) \ln \frac{p_i(0)}{e p^\circ} \right]$")
@@ -1151,8 +1244,8 @@ def plot_DA_VT(T,V, fixed_args):
     ax.xaxis.set_minor_formatter(mticker.NullFormatter())
 
     plt.grid(True, alpha=0.3)
-    plt.tight_layout()
     plt.legend(loc="best",fontsize=FONTSIZE[0])
+    plt.tight_layout()
 
     # --- update global variable: last_fig ---
     global last_fig
@@ -1167,6 +1260,8 @@ def plot_DA_VT(T,V, fixed_args):
     PVT_0  = (P_0 ,V,T)
     PVT_eq = (P_eq,V,T)
     print_info_eq("A",PVT_0,PVT_eq,molecules,xi_eq,n_eq,y_eq,p_eq,P_eq,Kp_v1,Kp_v2,Ky_v1,Ky_v2)
+    print(fr"   The slope of A(xi) is minus the chemical affinity: (dA/dxi)_T,V = RT ln(Qp/Kp) = -affinity.")
+    print("")
 # --------------------------------------------- #
 def plot_vib_average(Tmin,Tmax,freqmin,freqmax,freq=None):
     freqs    = np.linspace(freqmin,freqmax,51)
