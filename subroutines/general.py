@@ -74,12 +74,13 @@ Information:
 # ============================================= #
 #   Self-check of calculations done by hand     #
 # --------------------------------------------- #
-def check_value(label,correct,units="",rtol=0.02,atol=0.0,ntries=3,hint=""):
+def check_value(label,correct,units="",rtol=0.0,atol=0.0,ntries=3,hint=""):
     """Formative self-check of a result obtained BY HAND.
 
     The student types the value; the notebook only reports whether it agrees
     with its own result (within a tolerance). The correct value is never shown.
     Returns True/False."""
+    if rtol == 0.0 and atol == 0.0: rtol = 0.02
     sunits = rf" [{units}]" if units else ""
     for itry in range(ntries):
         answer = input(rf"   * {label}{sunits} = ").strip().replace(",",".")
