@@ -932,6 +932,7 @@ def pyscf_printdata(data):
     # frequencies are, actually, wavenumbers in (1/m)
     for i in range(0,len(freqs),5):
         INFO += "         "+"  ".join(["%8.2f"%(ii/100) for ii in freqs[i:i+5]])+"\n"
+    INFO += rf"     - electronic energy (hartree)   : {E0:.5f}"+"\n"
     INFO += rf"     - zero point energy (hartree)   : {ZPE:.5f}"+"\n"
     print(INFO)
 # ============================================= #
