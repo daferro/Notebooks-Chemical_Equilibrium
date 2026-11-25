@@ -298,7 +298,7 @@ def selfcheck_rate_constants(arrhenius,T=298.):
 # ============================================= #
 def optimize_and_freqs_n2o4(molecule,UNPAIREDS,CHARGES,key,DFTGRID,GEOMINFO):
     print(rf" * Molecule: {molecule:s}")
-    dftdata = general.optimize_and_freqs(molecule,UNPAIREDS[molecule],CHARGES[molecule],key[0],key[1],DFTGRID,bsym=True)
+    dftdata = general.optimize_and_freqs(molecule,UNPAIREDS[molecule],CHARGES[molecule],key[0],key[1],DFTGRID)
     print("")
     # visualize molecule
     xyz_opt = general.files_of_interest(molecule,key[0],key[1],DFTGRID)[1]
