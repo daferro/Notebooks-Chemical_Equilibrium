@@ -1274,7 +1274,7 @@ def plot_vib_average(Tmin,Tmax,freqmin,freqmax,freq=None):
     plt.plot(freqs,yy_sup  ,'b--',label=rf"$T$={Tmax:.2f} K")
     plt.plot(freqs,averages,'k-' ,label=rf"average")
     plt.xlabel(r"Vib. frequency (cm$^{-1}$)"     ,fontsize=14)
-    plt.ylabel(r"Vib. contribution, $n^{V^\ast}$",fontsize=14)
+    plt.ylabel(r"Vib. contribution, $n^{{\rm vib}^\ast}$",fontsize=14)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
