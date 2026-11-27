@@ -1089,10 +1089,11 @@ def plot_affinity(ax,xis,aff,xi_eq):
     if len(finite) > 0:
        lim = min(max(abs(np.percentile(finite,3)),abs(np.percentile(finite,97)),1.0),8.0)
        ax.set_ylim(-lim,lim)
+       box = dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="0.7", alpha=0.9)
        ax.text(0.03,0.93,r"forward reaction spontaneous",transform=ax.transAxes,
-               fontsize=FONTSIZE[0],color='tab:green',va='top',ha='left')
+               fontsize=FONTSIZE[0],color='tab:green',va='top',ha='left',bbox=box, zorder=5)
        ax.text(0.97,0.07,r"reverse reaction spontaneous",transform=ax.transAxes,
-               fontsize=FONTSIZE[0],color='tab:red',va='bottom',ha='right')
+               fontsize=FONTSIZE[0],color='tab:red',va='bottom',ha='right',bbox=box, zorder=5)
     ax.tick_params(axis='both',labelsize=FONTSIZE[1])
     ax.set_xlabel(r'$\xi \;\; \mathrm{[mol]}$', fontsize=FONTSIZE[2])
     ax.set_ylabel(r'$\mathcal{A}/(RT) = \ln (K_p^\circ/Q_p^\circ)$', fontsize=FONTSIZE[2])
