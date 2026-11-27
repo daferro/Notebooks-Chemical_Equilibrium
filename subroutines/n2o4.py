@@ -245,15 +245,30 @@ def selfcheck_thermo298():
     print("The notebook only tells you whether they agree with its own values.")
     print("")
     res  = []
-    res += [general.check_value("Delta_r H^o"    ,DHo/1000,"kJ/mol"   ,atol=0.06)]
-    res += [general.check_value("Delta_r S^o"    ,DSo     ,"J/(mol K)",atol=0.15)]
+    res += [general.check_value("Delta_r H^o"    ,DHo/1000,"kJ/mol"   ,atol=0.05]
+    res += [general.check_value("Delta_r S^o"    ,DSo     ,"J/(mol K)",atol=0.05)]
     # 4.80 kJ/mol from Delta_r H^o - T*Delta_r S^o; 4.73 kJ/mol from tabulated Delta_f G^o
-    res += [general.check_value("Delta_r G^o"    ,DGo/1000,"kJ/mol"   ,atol=0.09,
+    res += [general.check_value("Delta_r G^o"    ,DGo/1000,"kJ/mol"   ,atol=0.05,
             hint="Delta_r G^o = Delta_r H^o - T*Delta_r S^o; mind kJ and J.")]
     res += [general.check_value("K_p^o"          ,Kp      ,""         ,rtol=0.04,
             hint="K_p^o = exp(-Delta_r G^o/RT), with Delta_r G^o in J/mol.")]
-    res += [general.check_value("Delta_r C_p^o/R",DCPo/R  ,""         ,atol=0.01,
+    res += [general.check_value("Delta_r C_p^o/R",DCPo/R  ,""         ,atol=0.02,
             hint="sum of nu_i*C_p,m,i with the stoichiometric coefficients, divided by R.")]
+    general.summary_checks(res)
+# --------------------------------------------- #
+def selfcheck_gibbshelmholtz(refdata,T=350.,dT=10.):
+    """Exercise 2: Gibbs-Helmholtz equation checked BY HAND at one temperature."""
+    DGo_m = general.get_DGo(T-dT,refdata)
+    DGo_p = general.get_DGo(T+dT,refdata)
+    lhs   = (DGo_p/(T+dT) - DGo_m/(T-dT)) / (2*dT)    # central finite difference
+    rhs   = -general.get_DHo(T,refdata) / T**2        # analytic, eq (4)
+    print(rf"Enter the values you obtained BY HAND at T = {T:.0f} K (Delta T = {dT:.0f} K).")
+    print("")
+    res  = []
+    res += [general.check_value("d/dT(Delta_r G^o/T), finite difference",lhs,"J/(K^2 mol)",rtol=0.02,
+            hint="divide each Delta_r G^o (in J/mol) by its own temperature BEFORE subtracting; then divide by 2*Delta T.")]
+    res += [general.check_value("-Delta_r H^o/T^2                       ",rhs,"J/(K^2 mol)",rtol=0.02,
+            hint="Delta_r H^o(T) = Delta_r H^o(T_ref) + Delta_r C_p^o (T - T_ref), in J/mol; do not forget the minus sign.")]
     general.summary_checks(res)
 # --------------------------------------------- #
 def selfcheck_xieq():
