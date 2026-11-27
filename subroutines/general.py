@@ -1292,7 +1292,8 @@ def plot_vib_average(Tmin,Tmax,freqmin,freqmax,freq=None):
        # plot data for selected frequency
        plt.plot([freq,freq],[ylim[0],aver],'--',color="grey",zorder=1)
        plt.plot([xlim[0],freq],[aver,aver],'--',color="grey",zorder=1)
-       plt.plot(freq,aver,'o',color="grey",label=rf"$n^{{\rm vib^\ast}} = {aver:.3f}$")
+       label = r"$n^{{\rm vib}^\ast} = " + f"{aver:.3f}$"
+       plt.plot(freq,aver,'o',color="grey",label=label)
        # keep origonal limits
        plt.xlim(xlim)
        plt.ylim(ylim)
